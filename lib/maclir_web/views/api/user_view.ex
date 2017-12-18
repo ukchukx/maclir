@@ -6,19 +6,23 @@ defmodule MacLirWeb.API.UserView do
     %{data: render_many(users, UserView, "user.json")}
   end
 
+  def render("show.json", %{user: user, jwt: jwt}) do
+    %{data: user |> render_one(UserView, "user.json") |> Map.merge(%{token: jwt})}
+  end
+
   def render("show.json", %{user: user}) do
     %{data: render_one(user, UserView, "user.json")}
   end
 
   def render("user.json", %{user: user}) do
-    %{id: user.id,
+    %{id: user.uuid,
       username: user.username,
       email: user.email,
-      hashed_password: user.hashed_password,
+      role: user.role,
       bio: user.bio,
       image: user.image,
-      lat: user.lat,
-      long: user.long,
+      latitude: user.latitude,
+      longitude: user.longitude,
       phone: user.phone}
   end
 end

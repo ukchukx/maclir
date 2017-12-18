@@ -1,104 +1,76 @@
 defmodule MacLir.Accounts do
   @moduledoc """
-  The Accounts context.
+  The boundary for the Accounts system.
   """
 
-  import Ecto.Query, warn: false
+  alias MacLir.Accounts.Commands.RegisterUser
+  alias MacLir.Accounts.Queries.{UserByPhone,UserByUsername,UserByEmail}
+  alias MacLir.Accounts.Projections.User
   alias MacLir.Repo
-
-  alias MacLir.Accounts.User
+  alias MacLir.Router
 
   @doc """
-  Returns the list of users.
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}, ...]
-
+  Register a new user.
   """
-  def list_users do
-    Repo.all(User)
+  def register_user(attrs \\ %{}) do
+    uuid = UUID.uuid4()
+
+    register_user =
+      attrs
+      |> RegisterUser.new
+      |> RegisterUser.assign_uuid(uuid)
+      |> RegisterUser.downcase_username
+      |> RegisterUser.downcase_email
+      |> RegisterUser.hash_password
+
+    with :ok <- Router.dispatch(register_user, consistency: :strong) do
+      get(User, uuid)
+    else
+      reply -> reply
+    end
   end
 
   @doc """
-  Gets a single user.
-
-  Raises `Ecto.NoResultsError` if the User does not exist.
-
-  ## Examples
-
-      iex> get_user!(123)
-      %User{}
-
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
-
+  Get an existing user by their username, or return `nil` if not registered
   """
-  def get_user!(id), do: Repo.get!(User, id)
-
-  @doc """
-  Creates a user.
-
-  ## Examples
-
-      iex> create_user(%{field: value})
-      {:ok, %User{}}
-
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+  def user_by_username(username) when is_binary(username) do
+    username
+    |> String.downcase
+    |> UserByUsername.new
+    |> Repo.one
   end
 
   @doc """
-  Updates a user.
-
-  ## Examples
-
-      iex> update_user(user, %{field: new_value})
-      {:ok, %User{}}
-
-      iex> update_user(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  Get a single user by their UUID
   """
-  def update_user(%User{} = user, attrs) do
-    user
-    |> User.changeset(attrs)
-    |> Repo.update()
+  def user_by_uuid(uuid) when is_binary(uuid) do
+    Repo.get(User, uuid)
   end
 
   @doc """
-  Deletes a User.
-
-  ## Examples
-
-      iex> delete_user(user)
-      {:ok, %User{}}
-
-      iex> delete_user(user)
-      {:error, %Ecto.Changeset{}}
-
+  Get an existing user by their phone number, or return `nil` if not registered
   """
-  def delete_user(%User{} = user) do
-    Repo.delete(user)
+  def user_by_phone(phone) do
+    phone
+    |> UserByPhone.new
+    |> Repo.one
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-      iex> change_user(user)
-      %Ecto.Changeset{source: %User{}}
-
+  Get an existing user by their email, or return `nil` if not registered
   """
-  def change_user(%User{} = user) do
-    User.changeset(user, %{})
+  def user_by_email(email) when is_binary(email) do
+    email
+    |> String.downcase
+    |> UserByEmail.new
+    |> Repo.one
   end
+
+  defp get(schema, uuid) do
+    case Repo.get(schema, uuid) do
+      nil -> {:error, :not_found}
+      projection -> {:ok, projection}
+    end
+  end
+
 end

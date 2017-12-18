@@ -12,8 +12,10 @@ defmodule MacLir.Application do
       supervisor(MacLir.Repo, []),
       # Start the endpoint when the application starts
       supervisor(MacLirWeb.Endpoint, []),
-      # Start your own worker by calling: MacLir.Worker.start_link(arg1, arg2, arg3)
-      # worker(MacLir.Worker, [arg1, arg2, arg3]),
+      # Accounts supervisor
+      supervisor(MacLir.Accounts.Supervisor, []),
+      # Enforce unique constraints
+      worker(MacLir.Support.Unique, []),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

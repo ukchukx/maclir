@@ -2,78 +2,103 @@ defmodule MacLir.AccountsTest do
   use MacLir.DataCase
 
   alias MacLir.Accounts
+  alias MacLir.Accounts.Projections.User
+  alias MacLir.Auth
 
-  describe "users" do
-    alias MacLir.Accounts.User
+  describe "register user" do
+    @tag :integration
+    test "should succeed with valid data" do
+      params = build(:user)
+      assert {:ok, %User{} = user} = Accounts.register_user(params)
 
-    @valid_attrs %{bio: "some bio", email: "some email", hashed_password: "some hashed_password", image: "some image", lat: 120.5, long: 120.5, phone: "some phone", username: "some username"}
-    @update_attrs %{bio: "some updated bio", email: "some updated email", hashed_password: "some updated hashed_password", image: "some updated image", lat: 456.7, long: 456.7, phone: "some updated phone", username: "some updated username"}
-    @invalid_attrs %{bio: nil, email: nil, hashed_password: nil, image: nil, lat: nil, long: nil, phone: nil, username: nil}
-
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Accounts.create_user()
-
-      user
+      assert user.bio == nil
+      assert user.email == params.email
+      assert user.role == params.role
+      assert user.phone == params.phone
+      assert user.latitude == params.latitude
+      assert user.longitude == params.longitude
+      assert user.image == nil
+      assert user.username == params.username
     end
 
-    test "list_users/0 returns all users" do
-      user = user_fixture()
-      assert Accounts.list_users() == [user]
+    @tag :integration
+    test "should fail with invalid data and return error" do
+      assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, username: ""))
+
+      assert errors == %{username: ["can't be empty"]}
     end
 
-    test "get_user!/1 returns the user with given id" do
-      user = user_fixture()
-      assert Accounts.get_user!(user.id) == user
+    @tag :integration
+    test "should fail when username or phone already taken and return error" do
+      assert {:ok, %User{}} = Accounts.register_user(build(:user))
+      assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, email: "jake2@jake.jake"))
+
+      assert errors == %{phone: ["has already been taken"], username: ["has already been taken"]}
     end
 
-    test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
-      assert user.bio == "some bio"
-      assert user.email == "some email"
-      assert user.hashed_password == "some hashed_password"
-      assert user.image == "some image"
-      assert user.lat == 120.5
-      assert user.long == 120.5
-      assert user.phone == "some phone"
-      assert user.username == "some username"
+    @tag :integration
+    test "should fail when registering identical username or phone at same time and return error" do
+      1..2
+      |> Enum.map(fn x -> Task.async(fn -> Accounts.register_user(build(:user, email: "jake#{x}@jake.jake")) end)  end)
+      |> Enum.map(&Task.await/1)
     end
 
-    test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
+    @tag :integration
+    test "should fail when username format is invalid and return error" do
+      assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, username: "j@ke"))
+
+      assert errors == %{username: ["is invalid"]}
     end
 
-    test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      assert {:ok, user} = Accounts.update_user(user, @update_attrs)
-      assert %User{} = user
-      assert user.bio == "some updated bio"
-      assert user.email == "some updated email"
-      assert user.hashed_password == "some updated hashed_password"
-      assert user.image == "some updated image"
-      assert user.lat == 456.7
-      assert user.long == 456.7
-      assert user.phone == "some updated phone"
-      assert user.username == "some updated username"
+    @tag :integration
+    test "should fail when phone is not Nigerian GSM number and return error" do
+      assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, phone: "084123456"))
+
+      assert errors == %{phone: ["is not a Nigerian GSM number"]}
     end
 
-    test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
-      assert user == Accounts.get_user!(user.id)
+    @tag :integration
+    test "should convert username to lowercase" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user, username: "JAKE"))
+
+      assert user.username == "jake"
     end
 
-    test "delete_user/1 deletes the user" do
-      user = user_fixture()
-      assert {:ok, %User{}} = Accounts.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
+    @tag :integration
+    test "should fail when email address already taken and return error" do
+      assert {:ok, %User{}} = Accounts.register_user(build(:user, username: "jake"))
+      assert {:error, :validation_failure, errors} = 
+        Accounts.register_user(build(:user, username: "jake2", phone: "+2348034445555"))
+
+      assert errors == %{email: ["has already been taken"]}
     end
 
-    test "change_user/1 returns a user changeset" do
-      user = user_fixture()
-      assert %Ecto.Changeset{} = Accounts.change_user(user)
+    @tag :integration
+    test "should fail when registering identical email addresses at same time and return error" do
+      1..2
+      |> Enum.map(fn x -> Task.async(fn -> Accounts.register_user(build(:user, username: "user#{x}")) end)  end)
+      |> Enum.map(&Task.await/1)
+    end
+
+    @tag :integration
+    test "should fail when email address format is invalid and return error" do
+      assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, email: "invalidemail"))
+
+      assert errors == %{email: ["is invalid"]}
+    end
+
+    @tag :integration
+    test "should convert email address to lowercase" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user, email: "JAKE@JAKE.JAKE"))
+
+      assert user.email == "jake@jake.jake"
+    end
+
+    @tag :integration
+    test "should hash password" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
+
+      assert Auth.validate_password("jakejake", user.hashed_password)
     end
   end
 end

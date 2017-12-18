@@ -9,6 +9,8 @@ config :maclir, MacLirWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+config :comeonin, :bcrypt_log_rounds, 4
+
 
 # Configure the event store database
 config :eventstore, EventStore.Storage,
@@ -17,7 +19,7 @@ config :eventstore, EventStore.Storage,
   password: "postgres",
   database: "maclir_eventstore_test",
   hostname: "localhost",
-  pool_size: 10
+  pool_size: 1
 
 # Configure the read store database
 config :maclir, MacLir.Repo,
@@ -26,4 +28,4 @@ config :maclir, MacLir.Repo,
   password: "postgres",
   database: "maclir_readstore_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool_size: 1

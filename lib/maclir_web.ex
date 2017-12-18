@@ -23,6 +23,7 @@ defmodule MacLirWeb do
       import Plug.Conn
       import MacLirWeb.Router.Helpers
       import MacLirWeb.Gettext
+      import MacLirWeb.JWT
     end
   end
 

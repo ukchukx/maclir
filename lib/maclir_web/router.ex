@@ -11,6 +11,8 @@ defmodule MacLirWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
   end
 
   scope "/", MacLirWeb do
@@ -26,5 +28,7 @@ defmodule MacLirWeb.Router do
     pipe_through :api
 
     post "/users", UserController, :create
+    get "/user", UserController, :current
+    post "/users/login", SessionController, :create
   end
 end

@@ -4,6 +4,9 @@ config :maclir,
   namespace: MacLir,
   ecto_repos: [MacLir.Repo]
 
+config :commanded_ecto_projections,
+  repo: MacLir.Repo
+
 # Configures the endpoint
 config :maclir, MacLirWeb.Endpoint,
   url: [host: "localhost"],
@@ -20,5 +23,22 @@ config :logger, :console,
 
 config :commanded,
  	event_store_adapter: Commanded.EventStore.Adapters.EventStore
+
+config :vex,
+	sources: [
+    MacLir.Accounts.Validators,
+		MacLir.Support.Validators,
+		Vex.Validators
+	]
+
+config :guardian, Guardian,
+  allowed_algos: ["HS512"],
+  verify_module: Guardian.JWT,
+  issuer: "Conduit",
+  ttl: {30, :days},
+  allowed_drift: 2000,
+  verify_issuer: true,
+  secret_key: "58R4E5dJY04t34JXiwv2mER9sJKjInIoj0VvryjVlTmkbD2rlstrf+o6QoRFCb37",
+  serializer: MacLir.Auth.GuardianSerializer
 
 import_config "#{Mix.env}.exs"
