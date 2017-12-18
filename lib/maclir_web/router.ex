@@ -20,7 +20,14 @@ defmodule MacLirWeb.Router do
 
     get "/", PageController, :home
     get "/friends", PageController, :friends
-    get "/notifs", PageController, :notifs
+    get "/friend-requests", PageController, :friend_requests
+    get "/profile", PageController, :profile
+
+    get "/login", SessionController, :get_login
+    post "/login", SessionController, :login
+
+    get "/register", SessionController, :get_register
+    post "/register", SessionController, :register
   end
 
   # Other scopes may use custom stacks.

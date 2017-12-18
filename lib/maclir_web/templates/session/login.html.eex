@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col-sm-12 col-md-6 mx-auto">
+        <section class="form-elegant">
+
+            <!--Form without header-->
+            <div class="card">
+                <div class="card-body mx-4">
+
+                    <!--Header-->
+                    <div class="text-center">
+                        <h3 class="dark-grey-text mb-5"><strong>Sign in</strong></h3>
+                    </div>
+
+                    <!--Body-->
+                    <div class="md-form">
+                        <i class="fa fa-phone prefix"></i>
+                        <input type="text" id="phone" class="form-control">
+                        <label for="phone">Phone number</label>
+                    </div>
+
+                    <div class="md-form pb-3">
+                        <i class="fa fa-lock prefix"></i>
+                        <input type="password" id="passw" class="form-control">
+                        <label for="passw">Password</label>
+                        <%# <p class="font-small blue-text d-flex justify-content-end">Forgot <a href="#" class="blue-text ml-1"> Password?</a></p> %>
+                    </div>
+
+                    <div class="text-center mb-3">
+                        <button type="button" class="btn blue btn-block btn-rounded z-depth-1a">Sign in</button>
+                    </div>
+
+                </div>
+
+                <!--Footer-->
+                <div class="modal-footer mx-5 pt-3 mb-1">
+                    <p class="font-small grey-text d-flex justify-content-end">Don't have an account? <a href="<%= session_path(@conn, :get_register) %>" class="blue-text ml-1"> Sign Up</a></p>
+                </div>
+
+            </div>
+            <!--/Form without header-->
+
+        </section>
+    </div>
+</div>

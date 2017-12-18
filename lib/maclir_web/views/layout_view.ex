@@ -4,6 +4,14 @@ defmodule MacLirWeb.LayoutView do
   def gmap_key do
     Application.get_env(:maclir, :google_map_key)
   end
+
+  @doc """
+  Returns true if header should be shown.
+  Header will be shown unless explicitly prohibited
+  """
+  def show_header(%{assigns: assigns} = conn) do
+    Map.get(assigns, :show_header, true)
+  end
   
   @doc """
     Generates name for the JavaScript view we want to use

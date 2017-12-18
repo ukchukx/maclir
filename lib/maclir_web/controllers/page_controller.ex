@@ -6,10 +6,14 @@ defmodule MacLirWeb.PageController do
   end
 
   def friends(conn, _params) do
-    render conn, "home.html"
+    render conn, "friends.html"
   end
 
-  def notifs(conn, _params) do
-    render conn, "home.html"
+  def friend_requests(conn, _params) do
+    render conn, "friend_requests.html"
+  end
+
+  def profile(conn, _params) do
+    render conn, "profile.html"
   end
 end

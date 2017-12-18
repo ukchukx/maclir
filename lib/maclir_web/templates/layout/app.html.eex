@@ -12,38 +12,11 @@
   </head>
 
   <body data-js-view-name="<%= js_view_name(@conn, @view_template) %>">
+    <%= if show_header(@conn) do %>
     <header>
-      <nav class="navbar navbar-expand-lg navbar-dark cyan">
-        <!-- Navbar brand -->
-        <a class="navbar-brand" href="/">MacLir</a>
-        <ul class="nav navbar-nav nav-flex-icons ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link waves-effect" href="#">
-                  <i class="fa fa-user"></i>
-                  <span class="d-none d-md-inline-block">Friends</span>
-              </a>
-            </li>
-
-            <!-- Dropdown -->
-            <li class="nav-item notifications-nav">
-              <a class="nav-link waves-effect">
-                  <i class="fa fa-bell"></i>
-                  <span class="d-none d-md-inline-block">Notifications</span>
-                  <span class="badge red">3</span> 
-              </a>
-          </li>
-          <li class="nav-item avatar dropdown">
-              <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg" class="avatar-img img-fluid rounded-circle z-depth-0"></a>
-              <div class="dropdown-menu dropdown-menu-right dropdown-purple" aria-labelledby="navbarDropdownMenuLink-5">
-                  <a class="dropdown-item" href="#">Profile</a>
-                  <a class="dropdown-item" href="#">Logout</a>
-              </div>
-          </li>
-
-        </ul>
-      </nav>
+      <%= render "nav.html", assigns %>
     </header>
+    <% end %>
     <main>
       <div class="container-fluid m-0 p-0">
         <%= render @view_module, @view_template, assigns %>

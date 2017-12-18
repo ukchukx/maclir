@@ -1,0 +1,25 @@
+<div class="side-panel">
+	<div class="list-group">
+		<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="md-form">
+		    <i class="fa fa-phone prefix"></i>
+		    <input type="text" id="add-friend" class="form-control">
+		    <label for="add-friend">Mobile phone number</label>
+			</div>
+      <button type="button" class="btn btn-flat btn-sm">Add friend</button>
+	  </a>
+		<%= for friend <- friends(@conn) do %>
+		<div class="media list-group-item d-flex">
+        <a class="media-left waves-light">
+            <img class="rounded-circle avatar-img" src="<%= friend.image %>" alt="Generic image">
+        </a>
+        <div class="media-body">
+            <p><%= friend.username %></p>
+            <small>Last seen: 30s ago</small>
+        </div>
+        <button type="button" class="btn btn-flat btn-sm">Remove</button>
+    </div>
+		<% end %>
+	</div>
+</div>
+<%= render "map.html", assigns %>

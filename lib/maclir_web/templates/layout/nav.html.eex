@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-light">
+  <!-- Navbar brand -->
+  <a class="navbar-brand" href="/">maclir</a>
+  <ul class="nav navbar-nav nav-flex-icons ml-auto">
+      <li class="nav-item">
+          <a class="nav-link waves-effect" href="<%= page_path(@conn, :friends) %>">
+            <i class="fa fa-user"></i>
+            <span class="d-none d-md-inline-block">Friends</span>
+        </a>
+      </li>
+
+      <!-- Dropdown -->
+      <li class="nav-item">
+        <a class="nav-link waves-effect" href="<%= page_path(@conn, :friend_requests) %>">
+            <i class="fa fa-bell"></i>
+            <span class="d-none d-md-inline-block">Friend requests</span>
+            <%= if @conn |> MacLirWeb.PageView.friend_requests |> Enum.count > 0 do %>
+            <span class="badge blue">
+              <%= @conn |> MacLirWeb.PageView.friend_requests |> Enum.count %>
+            </span> 
+            <% end %>
+        </a>
+    </li>
+    <li class="nav-item avatar dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img src="https://www.buira.org/assets/images/shared/default-profile.png" class="avatar-img img-fluid rounded-circle z-depth-0"></a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-purple" aria-labelledby="navbarDropdownMenuLink-5">
+            <a class="dropdown-item" href="<%= page_path(@conn, :profile) %>">Profile</a>
+            <a class="dropdown-item" href="#">Logout</a>
+        </div>
+    </li>
+
+  </ul>
+</nav>
