@@ -38,6 +38,7 @@ defmodule MacLirWeb.Endpoint do
     key: "_maclir_key",
     signing_salt: "1m55v/7n"
 
+  plug CORSPlug
   plug MacLirWeb.Router
 
   @doc """

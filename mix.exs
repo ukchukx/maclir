@@ -39,6 +39,7 @@ defmodule MacLir.Mixfile do
       {:commanded, "~> 0.15"},
       {:commanded_eventstore_adapter, "~> 0.3"},
       {:commanded_ecto_projections, "~> 0.6"},
+      {:cors_plug, "~> 1.4"},
       {:exconstructor, "~> 1.1"},
       {:guardian, "~> 0.14"},
       {:ex_machina, "~> 2.0", only: :test},
