@@ -1,6 +1,8 @@
 defmodule MacLirWeb.PageView do
   use MacLirWeb, :view
 
+  alias MacLirWeb.LayoutView
+
   def friends(_conn) do
   	map = %{
   		image: "https://mdbootstrap.com/img/Photos/Avatars/avatar-13.jpg",
@@ -18,5 +20,12 @@ defmodule MacLirWeb.PageView do
 
   	[1, 2, 3, 4, 5]
   	|> Enum.map(fn _ -> map end)
+  end
+
+  def current_user(conn) do
+    case LayoutView.current_user(conn) do
+      nil -> %{username: "", phone: ""}
+      user -> user        
+    end
   end
 end

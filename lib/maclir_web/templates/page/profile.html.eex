@@ -3,37 +3,38 @@
 
     <!--Form with header-->
     <div class="card">
-
         <!--Header-->
-        <div class="header pt-3 grey lighten-2">
+        <div class="header pt-3 blue lighten-2">
 
             <div class="row d-flex justify-content-start">
-                <h3 class="deep-grey-text mt-3 mb-4 pb-1 mx-5">Profile</h3>
+                <h3 class="white-text mt-3 mb-4 pb-1 mx-5">Profile</h3>
             </div>
 
         </div>
         <!--Header-->
+        <%= form_for @conn, page_path(@conn, :post_profile), [as: :profile, id: "login-form"], fn _f -> %>
         <div class="card-body mx-4 mt-4">
           <div class="md-form">
-					    <i class="fa fa-user prefix"></i>
-              <input type="text" id="email" class="form-control">
-              <label for="email">Username</label>
+					    <i class="fa fa-user prefix black-text"></i>
+              <input name="profile[username]" type="text" id="username" class="form-control" value="<%= current_user(@conn).username %>">
+              <label for="username">Username</label>
           </div>
           <div class="md-form">    
-          		<i class="fa fa-phone prefix"></i>
-					    <input type="tel" id="form9" class="form-control" disabled>
+          		<i class="fa fa-phone prefix black-text"></i>
+					    <input name="profile[phone]" type="text" id="form9" class="form-control"  value="<%= current_user(@conn).phone %>" disabled>
 					    <label for="form9">Phone</label>
 					</div>
-          <div class="md-form pb-3">					    
+          <div class="md-form">					    
           		<i class="fa fa-lock prefix"></i>
-              <input type="password" id="Form-pass4" class="form-control">
+              <input name="profile[password]" type="password" id="Form-pass4" class="form-control">
               <label for="Form-pass4">New password</label>
                 
             </div>
 
           <div class="text-center mb-4">
-              <button type="button" class="btn btn-flat btn-block z-depth-2">Update</button>
+              <button type="submit" class="blue btn btn-flat btn-block z-depth-2">Update</button>
           </div>
+          <% end %>
 
         </div>
 

@@ -6,7 +6,7 @@
 		    <input type="text" id="add-friend" class="form-control">
 		    <label for="add-friend">Mobile phone number</label>
 			</div>
-      <button type="button" class="btn btn-flat btn-sm">Add friend</button>
+      <button type="button" class="btn btn-flat btn-sm blue">Add friend</button>
 	  </a>
 		<%= for friend <- friends(@conn) do %>
 		<div class="media list-group-item d-flex">
@@ -17,7 +17,7 @@
             <p><%= friend.username %></p>
             <small>Last seen: 30s ago</small>
         </div>
-        <button type="button" class="btn btn-flat btn-sm">Remove</button>
+        <button type="button" class="btn btn-flat btn-sm blue">Remove</button>
     </div>
 		<% end %>
 	</div>

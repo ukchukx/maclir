@@ -6,7 +6,7 @@
             <div class="text-center">
                 <h3 class="dark-grey-text mb-5"><strong>Sign in</strong></h3>
             </div>
-            <%= form_for @conn, session_path(@conn, :post_login), [as: :session, id: "login-form"], fn f -> %>
+            <%= form_for @conn, session_path(@conn, :post_login), [as: :session, id: "login-form"], fn _f -> %>
 
             <!--Body-->
             <div class="md-form">

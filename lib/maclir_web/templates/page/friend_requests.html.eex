@@ -1,13 +1,13 @@
 <div class="side-panel">
 	<div class="list-group">
 		<%= for n <- friend_requests(@conn) do %>
-	  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+	  <a href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
 	    <div class="d-flex w-100 justify-content-between">
 	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>) wants to share locations with you</h5>
 	    </div>
 	    <p class="mb-1">
-	    	<button type="button" class="btn btn-flat btn-sm">Share</button>
-	    	<button type="button" class="btn btn-flat btn-sm">Decline</button>
+	    	<button type="button" class="btn btn-flat btn-sm blue">Share</button>
+	    	<button type="button" class="btn btn-flat btn-sm blue">Decline</button>
 	    </p>
 	    <small>3 days ago</small>
 	  </a>

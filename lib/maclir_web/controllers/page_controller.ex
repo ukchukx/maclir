@@ -16,4 +16,9 @@ defmodule MacLirWeb.PageController do
   def profile(conn, _params) do
     render conn, "profile.html"
   end
+
+  def post_profile(conn, _params) do
+    IO.inspect _params
+    render conn, "profile.html"
+  end
 end

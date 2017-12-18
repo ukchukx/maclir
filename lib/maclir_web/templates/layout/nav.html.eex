@@ -1,10 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-light">
   <!-- Navbar brand -->
-  <a class="navbar-brand" href="/">maclir</a>
+  <a class="navbar-brand blue-text font-weight-bold" href="/">maclir</a>
   <ul class="nav navbar-nav nav-flex-icons ml-auto">
       <li class="nav-item">
           <a class="nav-link waves-effect" href="<%= page_path(@conn, :friends) %>">
-            <i class="fa fa-user"></i>
+            <i class="fa fa-user blue-text"></i>
             <span class="d-none d-md-inline-block">Friends</span>
         </a>
       </li>
@@ -12,7 +12,7 @@
       <!-- Dropdown -->
       <li class="nav-item">
         <a class="nav-link waves-effect" href="<%= page_path(@conn, :friend_requests) %>">
-            <i class="fa fa-bell"></i>
+            <i class="fa fa-bell blue-text"></i>
             <span class="d-none d-md-inline-block">Friend requests</span>
             <%= if @conn |> MacLirWeb.PageView.friend_requests |> Enum.count > 0 do %>
             <span class="badge blue">

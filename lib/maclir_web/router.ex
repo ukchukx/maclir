@@ -30,6 +30,7 @@ defmodule MacLirWeb.Router do
     get "/login", SessionController, :login
     post "/login", SessionController, :post_login
     get "/logout", SessionController, :logout
+    get "/logout", SessionController, :logout
 
     get "/register", SessionController, :register
     post "/register", SessionController, :post_register
@@ -42,6 +43,7 @@ defmodule MacLirWeb.Router do
     get "/friends", PageController, :friends
     get "/friend-requests", PageController, :friend_requests
     get "/profile", PageController, :profile
+    post "/profile", PageController, :post_profile
   end
 
   # Other scopes may use custom stacks.
