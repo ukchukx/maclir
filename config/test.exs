@@ -15,8 +15,8 @@ config :comeonin, :bcrypt_log_rounds, 4
 # Configure the event store database
 config :eventstore, EventStore.Storage,
   serializer: Commanded.Serialization.JsonSerializer,
-  username: "postgres",
-  password: "postgres",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASS"),
   database: "maclir_eventstore_test",
   hostname: "localhost",
   pool_size: 1
@@ -24,8 +24,8 @@ config :eventstore, EventStore.Storage,
 # Configure the read store database
 config :maclir, MacLir.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASS"),
   database: "maclir_readstore_test",
   hostname: "localhost",
   pool_size: 1

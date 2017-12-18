@@ -18,7 +18,7 @@ defmodule MacLirWeb.Router do
   scope "/", MacLirWeb do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", PageController, :home
     get "/friends", PageController, :friends
     get "/notifs", PageController, :notifs
   end

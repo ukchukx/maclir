@@ -17,7 +17,9 @@ exports.config = {
           "vendor/js/jquery-3.2.1.min.js",
           "vendor/js/popper.min.js",
           "vendor/js/bootstrap.min.js",
-          "vendor/js/mdb.min.js"
+          "vendor/js/mdb.min.js",
+          "vendor/js/leaflet.js",
+          "vendor/js/Leaflet.GoogleMutant.js",
         ]
       }
     },
@@ -64,7 +66,8 @@ exports.config = {
   npm: {
     enabled: true,
     globals: {
-      Vue: "vue/dist/vue.common.js"
+      Vue: "vue/dist/vue.common.js",
+      Vue2Leaflet: "vue2-leaflet"
     }
   }
 };

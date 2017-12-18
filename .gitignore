@@ -9,3 +9,4 @@ npm-debug.log
 /config/*.secret.exs
 *.swo
 *.swp
+.env

@@ -1,0 +1,11 @@
+<div id="map" class="p-0 m-0">
+	<v-map ref="map" :zoom="zoom" :center="center">
+	<v-marker 
+		:draggable="false"
+		v-for="marker, row in markers" 
+		:lat-lng="marker.coords" 
+		:key="row">
+		<v-popup :content="marker.label"></v-popup>
+	</v-marker>
+	</v-map>
+</div>

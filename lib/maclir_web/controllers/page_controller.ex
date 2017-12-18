@@ -1,15 +1,15 @@
 defmodule MacLirWeb.PageController do
   use MacLirWeb, :controller
 
-  def index(conn, _params) do
-    render conn, "index.html"
+  def home(conn, _params) do
+    render conn, "home.html"
   end
 
   def friends(conn, _params) do
-    render conn, "index.html"
+    render conn, "home.html"
   end
 
   def notifs(conn, _params) do
-    render conn, "index.html"
+    render conn, "home.html"
   end
 end

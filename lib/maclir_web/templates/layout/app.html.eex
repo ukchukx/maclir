@@ -7,11 +7,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>MacLir | See your friends' location</title>
+    <title>Share your location with friends | MacLir</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
-  <body>
+  <body data-js-view-name="<%= js_view_name(@conn, @view_template) %>">
     <header>
       <nav class="navbar navbar-expand-lg navbar-dark cyan">
         <!-- Navbar brand -->
@@ -50,6 +50,10 @@
       </div>
     </main>
     <footer></footer>
+    <script src="https://unpkg.com/es6-promise@4.0.5/dist/es6-promise.min.js"></script>
+    <script>ES6Promise.polyfill();</script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= gmap_key() %>" async defer></script>
+
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

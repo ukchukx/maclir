@@ -6,3 +6,15 @@
 .avatar > .dropdown-toggle::after {
 	display: none;
 }
+
+#map {
+	width: auto;
+	height: 100vh; 
+	position: relative; 
+	overflow: hidden;
+}
+
+.side-panel {
+	position: absolute;
+	z-index: 900;
+}

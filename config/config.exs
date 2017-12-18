@@ -7,6 +7,8 @@ config :maclir,
 config :commanded_ecto_projections,
   repo: MacLir.Repo
 
+config :maclir, google_map_key: System.get_env("GMAP_KEY")
+
 # Configures the endpoint
 config :maclir, MacLirWeb.Endpoint,
   url: [host: "localhost"],

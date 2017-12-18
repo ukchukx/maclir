@@ -19,3 +19,29 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+import loadView from "./views/loader";
+
+
+Vue.component('v-map', Vue2Leaflet.Map);
+Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
+Vue.component('v-marker', Vue2Leaflet.Marker);
+Vue.component( 'v-popup', Vue2Leaflet.Popup);
+
+function handleDOMContentLoaded() {
+  // Get the current view name
+  const viewName = document.getElementsByTagName('body')[0].dataset.jsViewName;
+
+  // Load view class and mount it
+  const ViewClass = loadView(viewName);
+  const view = new ViewClass();
+  view.mount();
+
+  window.currentView = view;
+}
+
+function handleDocumentUnload() {
+  window.currentView.unmount();
+}
+
+window.addEventListener('DOMContentLoaded', handleDOMContentLoaded, false);
+window.addEventListener('unload', handleDocumentUnload, false);
