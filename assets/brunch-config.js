@@ -20,6 +20,7 @@ exports.config = {
           "vendor/js/mdb.min.js",
           "vendor/js/leaflet.js",
           "vendor/js/Leaflet.GoogleMutant.js",
+          "vendor/js/toastr.min.js",
         ]
       }
     },

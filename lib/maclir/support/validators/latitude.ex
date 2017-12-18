@@ -2,7 +2,7 @@ defmodule MacLir.Support.Validators.Latitude do
   use Vex.Validator
 
   def validate(value, _options) do
-    case is_float(value) do
+    case is_number(value) do
       false -> {:error, "must be a decimal number"}
       true -> 
       	case value >= -90 && value <= 90 do

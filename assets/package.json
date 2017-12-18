@@ -7,9 +7,11 @@
   },
   "dependencies": {
     "@google/maps": "^0.4.5",
+    "google-libphonenumber": "^3.0.9",
     "leaflet.gridlayer.googlemutant": "^0.6.4",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
+    "toastr": "^2.1.4",
     "vue": "^2.5.10",
     "vue2-leaflet": "0.0.57"
   },

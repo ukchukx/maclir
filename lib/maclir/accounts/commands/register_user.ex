@@ -1,8 +1,8 @@
 defmodule MacLir.Accounts.Commands.RegisterUser do
   defstruct [
     user_uuid: "",
-    username: "",
-    email: "",
+    username: nil,
+    email: nil,
     phone: "",
     latitude: 500,
     longitude: 500,
@@ -19,13 +19,11 @@ defmodule MacLir.Accounts.Commands.RegisterUser do
 
   validates :user_uuid, uuid: true
   validates :username, 
-    presence: [message: "can't be empty"], 
-    format: [with: ~r/^[a-z0-9]+$/, allow_nil: true, allow_blank: true, message: "is invalid"],
+    format: [with: ~r/^[a-z_0-9]+$/, allow_nil: true, allow_blank: true, message: "is invalid"],
     string: true, 
     unique_username: true
 
   validates :email,
-    presence: [message: "can't be empty"],
     format: [with: ~r/\S+@\S+\.\S+/, allow_nil: true, allow_blank: true, message: "is invalid"],
     string: true,
     unique_email: true
@@ -46,14 +44,21 @@ defmodule MacLir.Accounts.Commands.RegisterUser do
   Convert username to lowercase characters
   """
   def downcase_username(%RegisterUser{username: username} = register_user) do
-    %RegisterUser{register_user | username: String.downcase(username)}
+    case username do
+      nil -> register_user
+      _ -> %RegisterUser{register_user | username: String.downcase(username)}
+        
+    end
   end
 
   @doc """
   Convert email address to lowercase characters
   """
   def downcase_email(%RegisterUser{email: email} = register_user) do
-    %RegisterUser{register_user | email: String.downcase(email)}
+    case email do
+      nil -> register_user
+      email -> %RegisterUser{register_user | email: String.downcase(email)}
+    end
   end
 
   @doc """

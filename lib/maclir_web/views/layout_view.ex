@@ -5,11 +5,15 @@ defmodule MacLirWeb.LayoutView do
     Application.get_env(:maclir, :google_map_key)
   end
 
+  def current_user(conn), do: Guardian.Plug.current_resource(conn)
+  
+  def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
+
   @doc """
   Returns true if header should be shown.
   Header will be shown unless explicitly prohibited
   """
-  def show_header(%{assigns: assigns} = conn) do
+  def show_header(%{assigns: assigns} = _conn) do
     Map.get(assigns, :show_header, true)
   end
   

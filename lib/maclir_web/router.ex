@@ -7,6 +7,8 @@ defmodule MacLirWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
   end
 
   pipeline :api do
@@ -15,19 +17,31 @@ defmodule MacLirWeb.Router do
     plug Guardian.Plug.LoadResource
   end
 
+  pipeline :browser_auth do
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.EnsureAuthenticated, handler: MacLirWeb.SessionController
+    plug Guardian.Plug.LoadResource
+  end
+
   scope "/", MacLirWeb do
     pipe_through :browser # Use the default browser stack
 
+
+    get "/login", SessionController, :login
+    post "/login", SessionController, :post_login
+    get "/logout", SessionController, :logout
+
+    get "/register", SessionController, :register
+    post "/register", SessionController, :post_register
+  end
+
+  scope "/", MacLirWeb do
+    pipe_through [:browser, :browser_auth]
+    
     get "/", PageController, :home
     get "/friends", PageController, :friends
     get "/friend-requests", PageController, :friend_requests
     get "/profile", PageController, :profile
-
-    get "/login", SessionController, :get_login
-    post "/login", SessionController, :login
-
-    get "/register", SessionController, :get_register
-    post "/register", SessionController, :register
   end
 
   # Other scopes may use custom stacks.

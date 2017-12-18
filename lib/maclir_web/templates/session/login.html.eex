@@ -1,44 +1,40 @@
 <div class="row">
-    <div class="col-sm-12 col-md-6 mx-auto">
-        <section class="form-elegant">
-
-            <!--Form without header-->
-            <div class="card">
-                <div class="card-body mx-4">
-
-                    <!--Header-->
-                    <div class="text-center">
-                        <h3 class="dark-grey-text mb-5"><strong>Sign in</strong></h3>
-                    </div>
-
-                    <!--Body-->
-                    <div class="md-form">
-                        <i class="fa fa-phone prefix"></i>
-                        <input type="text" id="phone" class="form-control">
-                        <label for="phone">Phone number</label>
-                    </div>
-
-                    <div class="md-form pb-3">
-                        <i class="fa fa-lock prefix"></i>
-                        <input type="password" id="passw" class="form-control">
-                        <label for="passw">Password</label>
-                        <%# <p class="font-small blue-text d-flex justify-content-end">Forgot <a href="#" class="blue-text ml-1"> Password?</a></p> %>
-                    </div>
-
-                    <div class="text-center mb-3">
-                        <button type="button" class="btn blue btn-block btn-rounded z-depth-1a">Sign in</button>
-                    </div>
-
-                </div>
-
-                <!--Footer-->
-                <div class="modal-footer mx-5 pt-3 mb-1">
-                    <p class="font-small grey-text d-flex justify-content-end">Don't have an account? <a href="<%= session_path(@conn, :get_register) %>" class="blue-text ml-1"> Sign Up</a></p>
-                </div>
-
+  <div class="col-sm-12 col-md-6 mx-auto">
+    <section class="form-elegant">
+      <div class="card">
+          <div class="card-body mx-4">
+            <div class="text-center">
+                <h3 class="dark-grey-text mb-5"><strong>Sign in</strong></h3>
             </div>
-            <!--/Form without header-->
+            <%= form_for @conn, session_path(@conn, :post_login), [as: :session, id: "login-form"], fn f -> %>
 
-        </section>
-    </div>
+            <!--Body-->
+            <div class="md-form">
+                <i class="fa fa-phone prefix"></i>
+                <input type="text" name="session[phone]" class="form-control" id="phone">
+                <label for="phone">Phone number</label>
+            </div>
+
+            <div class="md-form pb-3">
+                <i class="fa fa-lock prefix"></i>
+                <input type="password" name="session[password]" class="form-control" id="password">
+                <label for="passw">Password</label>
+                <%# <p class="font-small blue-text d-flex justify-content-end">Forgot <a href="#" class="blue-text ml-1"> Password?</a></p> %>
+            </div>
+
+            <div class="text-center mb-3">
+                <%= submit "Sign in", class: "btn blue btn-block btn-rounded z-depth-1a" %>
+            </div>
+
+        </div>
+        <% end %>
+
+        <!--Footer-->
+        <div class="modal-footer mx-5 pt-3 mb-1">
+            <p class="font-small grey-text d-flex justify-content-end">Don't have an account? <a href="<%= session_path(@conn, :register) %>" class="blue-text ml-1"> Sign Up</a></p>
+        </div>
+
+      </div>
+    </section>
+  </div>
 </div>

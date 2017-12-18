@@ -2,6 +2,32 @@ import styles from '../map_styles';
 
 export default class MainView {
   mount() {
+  	this.showFlash();
+  	this.setupMap();
+
+    console.log('MainView mounted');
+  }
+
+  unmount() {
+    console.log('MainView unmounted');
+  }
+
+  showFlash() {
+  	const 
+  		error = document.querySelector('#error-flash'),
+  		info = document.querySelector('#info-flash');
+
+  	if (error && error.innerHTML) {
+  		toastr.error(error.innerHTML);
+  	}
+
+  	if (info && info.innerHTML) {
+  		toastr.info(info.innerHTML);
+  	}
+  }
+
+  setupMap() {
+  	if (!document.querySelector('#map')) return;
   	let mapComponent = new Vue({
       el: '#map',
       data() {
@@ -36,11 +62,5 @@ export default class MainView {
     L.control.zoom({
      	position:'bottomright'
 		}).addTo(this.map);
-
-    console.log('MainView mounted');
-  }
-
-  unmount() {
-    console.log('MainView unmounted');
   }
 }

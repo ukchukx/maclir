@@ -17,6 +17,14 @@
       <%= render "nav.html", assigns %>
     </header>
     <% end %>
+
+    <%= if get_flash(@conn, :info) do %>
+    <p id="info-flash" class="d-none"><%= get_flash(@conn, :info) %></p>
+    <% end %>
+    <%= if get_flash(@conn, :error) do %>
+    <p id="error-flash" class="d-none"><%= get_flash(@conn, :error) %></p>
+    <% end %>
+
     <main>
       <div class="container-fluid m-0 p-0">
         <%= render @view_module, @view_template, assigns %>

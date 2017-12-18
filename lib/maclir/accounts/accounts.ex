@@ -40,6 +40,8 @@ defmodule MacLir.Accounts do
     |> Repo.one
   end
 
+  def user_by_username(_), do: nil
+
   @doc """
   Get a single user by their UUID
   """
@@ -65,6 +67,8 @@ defmodule MacLir.Accounts do
     |> UserByEmail.new
     |> Repo.one
   end
+
+  def user_by_email(_), do: nil
 
   defp get(schema, uuid) do
     case Repo.get(schema, uuid) do
