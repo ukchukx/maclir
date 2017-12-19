@@ -14,6 +14,7 @@ defmodule MacLirWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      import MacLirWeb.ConnHelpers
       import MacLirWeb.Router.Helpers
       import MacLir.Factory
       import MacLir.Fixture

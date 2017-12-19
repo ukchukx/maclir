@@ -52,6 +52,7 @@ defmodule MacLirWeb.Router do
 
     post "/users", UserController, :create
     get "/user", UserController, :current
+    put "/user", UserController, :update
     post "/users/login", SessionController, :create
   end
 end

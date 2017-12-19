@@ -3,11 +3,10 @@ defmodule MacLir.Accounts do
   The boundary for the Accounts system.
   """
 
-  alias MacLir.Accounts.Commands.RegisterUser
+  alias MacLir.Accounts.Commands.{RegisterUser,UpdateUser}
   alias MacLir.Accounts.Queries.{UserByPhone,UserByUsername,UserByEmail}
   alias MacLir.Accounts.Projections.User
-  alias MacLir.Repo
-  alias MacLir.Router
+  alias MacLir.{Repo,Router}
 
   @doc """
   Register a new user.
@@ -25,6 +24,25 @@ defmodule MacLir.Accounts do
 
     with :ok <- Router.dispatch(register_user, consistency: :strong) do
       get(User, uuid)
+    else
+      reply -> reply
+    end
+  end
+
+  @doc """
+  Update the email, username, phone and/or password of a user.
+  """
+  def update_user(%User{uuid: user_uuid} = user, attrs \\ %{}) do
+    update_user =
+      attrs
+      |> UpdateUser.new
+      |> UpdateUser.assign_user(user)
+      |> UpdateUser.downcase_username
+      |> UpdateUser.downcase_email
+      |> UpdateUser.hash_password
+
+    with :ok <- Router.dispatch(update_user, consistency: :strong) do
+      get(User, user_uuid)
     else
       reply -> reply
     end
@@ -76,5 +94,4 @@ defmodule MacLir.Accounts do
       projection -> {:ok, projection}
     end
   end
-
 end

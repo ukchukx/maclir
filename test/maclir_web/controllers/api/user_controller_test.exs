@@ -34,6 +34,7 @@ defmodule MacLirWeb.API.UserControllerTest do
       assert json_response(conn, 422)["errors"] == %{
         "username" => [
           "can't be empty",
+          "must have a length of at least 4"
         ]
       }
     end
@@ -91,12 +92,32 @@ defmodule MacLirWeb.API.UserControllerTest do
     end
   end
 
-  def authenticated_conn(conn) do
-    with {:ok, user} <- fixture(:user),
-         {:ok, jwt} <- MacLirWeb.JWT.generate_jwt(user)
-    do
-      conn
-      |> put_req_header("authorization", "Bearer " <> jwt)
+  describe "update user" do
+    setup [
+      :register_user,
+    ]
+
+    @tag :api
+    test "should update and return user when data is valid", %{conn: conn, user: user} do
+      conn = put authenticated_conn(conn, user), user_path(conn, :update), 
+        user: [username: "jakeupdated", email: "jakeupdated@jake.jake", phone: "08012223333"]
+      json = json_response(conn, 200)["data"]
+      token = json["token"]
+      params = build(:user)
+
+      assert json == %{
+        "email" => "jakeupdated@jake.jake",
+        "username" => "jakeupdated",
+        "phone" => "08012223333",
+        "token" => token,
+        "id" => json["id"],
+        "bio" => nil,
+        "image" => nil,
+        "role" => params.role,
+        "latitude" => params.latitude,
+        "longitude" => params.longitude
+      }
+      refute token == ""
     end
   end
 end

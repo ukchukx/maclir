@@ -12,20 +12,20 @@ defmodule MacLir.AccountsTest do
       assert {:ok, %User{} = user} = Accounts.register_user(params)
 
       assert user.bio == nil
+      assert user.image == nil
       assert user.email == params.email
       assert user.role == params.role
       assert user.phone == params.phone
       assert user.latitude == params.latitude
       assert user.longitude == params.longitude
-      assert user.image == nil
       assert user.username == params.username
     end
 
     @tag :integration
-    test "should fail with invalid data and return error" do
+    test "should fail with invalid username and return error" do
       assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, username: ""))
 
-      assert errors == %{username: ["can't be empty"]}
+      assert errors == %{username: ["can't be empty", "must have a length of at least 4"]}
     end
 
     @tag :integration
@@ -99,6 +99,28 @@ defmodule MacLir.AccountsTest do
       assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
 
       assert Auth.validate_password("jakejake", user.hashed_password)
+    end
+  end
+
+  describe "update user" do
+    @tag :integration
+    test "should succeed with valid data" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
+      assert {:ok, %User{} = user} = 
+        Accounts.update_user(user, 
+          username: "jakeupdated", 
+          email: "jake@jake.jake", 
+          phone: "08010987654",
+          role: "admin",
+          longitude: -80,
+          latitude: -80)
+
+      assert user.username == "jakeupdated"
+      assert user.email == "jake@jake.jake"
+      assert user.phone == "08010987654"
+      assert user.role == "admin"
+      assert user.latitude == -80
+      assert user.longitude == -80
     end
   end
 end

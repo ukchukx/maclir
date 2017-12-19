@@ -7,8 +7,8 @@ defmodule MacLirWeb.API.UserController do
 
   action_fallback MacLirWeb.API.FallbackController
 
-  plug Guardian.Plug.EnsureAuthenticated, %{handler: MacLirWeb.ErrorHandler} when action in [:current]
-  plug Guardian.Plug.EnsureResource, %{handler: MacLirWeb.ErrorHandler} when action in [:current]
+  plug Guardian.Plug.EnsureAuthenticated, %{handler: MacLirWeb.ErrorHandler} when action in [:current, :update]
+  plug Guardian.Plug.EnsureResource, %{handler: MacLirWeb.ErrorHandler} when action in [:current, :update]
 
   def create(conn, %{"user" => user_params}, _user, _claims) do
     with {:ok, %User{} = user} <- Accounts.register_user(user_params),
@@ -26,6 +26,15 @@ defmodule MacLirWeb.API.UserController do
     conn
     |> put_status(:ok)
     |> render("show.json", user: user, jwt: jwt)
+  end
+
+  def update(conn, %{"user" => user_params}, user, _claims) do
+    with {:ok, %User{} = user} <- Accounts.update_user(user, user_params),
+         {:ok, jwt} = generate_jwt(user) do
+      conn
+      |> put_status(:ok)
+      |> render("show.json", user: user, jwt: jwt)
+    end
   end
 
 end

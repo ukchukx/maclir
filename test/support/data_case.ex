@@ -9,6 +9,7 @@ defmodule MacLir.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import MacLir.Factory
+      import MacLir.Fixture
       import MacLir.DataCase
     end
   end
