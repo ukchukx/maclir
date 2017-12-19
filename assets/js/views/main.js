@@ -4,12 +4,19 @@ export default class MainView {
   mount() {
   	this.showFlash();
   	this.setupMap();
+  	this.bootDropdown();
 
     console.log('MainView mounted');
   }
 
   unmount() {
     console.log('MainView unmounted');
+  }
+
+  bootDropdown() {
+  	// The first click on a dropdown does nothing, so 
+  	// let's get the first click out of the way
+  	document.querySelector('.navbar .nav-item.dropdown > a').click();
   }
 
   showFlash() {
