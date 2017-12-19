@@ -8,3 +8,6 @@
 	</v-marker>
 	</v-map>
 </div>
+<script src="https://unpkg.com/es6-promise@4.0.5/dist/es6-promise.min.js"></script>
+<script>ES6Promise.polyfill();</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= gmap_key() %>" async defer></script>

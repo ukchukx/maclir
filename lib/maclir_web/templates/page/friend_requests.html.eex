@@ -14,4 +14,4 @@
 		<% end %>
 	</div>
 </div>
-<%= render "map.html", assigns %>
+<%= MacLirWeb.LayoutView.render "map.html", assigns %>
