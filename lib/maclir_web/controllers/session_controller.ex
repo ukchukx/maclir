@@ -5,9 +5,34 @@ defmodule MacLirWeb.SessionController do
   alias MacLir.Accounts.Projections.User
 
 
-  def register(conn, _params) do
-  	conn = assign(conn, :show_header, false)
-    render conn, "register.html"
+  def register(conn, _) do
+    case Guardian.Plug.current_resource(conn) do
+      %User{} ->
+        conn
+        |> redirect(to: page_path(conn, :home))
+      _ ->
+        conn
+      	|> assign(:show_header, false)
+        |> render("register.html")      
+    end
+  end
+
+  def login(conn, _) do
+    case Guardian.Plug.current_resource(conn) do
+      %User{} ->
+        conn
+        |> redirect(to: page_path(conn, :home))
+      _ ->
+        conn
+        |> assign(:show_header, false)
+        |> render("login.html")      
+    end
+  end
+
+  def logout(conn, _) do
+    conn
+    |> Guardian.Plug.sign_out
+    |> redirect(to: session_path(conn, :login))
   end
 
   def post_register(conn, %{"session" => 
@@ -50,27 +75,16 @@ defmodule MacLirWeb.SessionController do
     end
   end
 
-  def login(conn, _params) do
-  	conn = assign(conn, :show_header, false)
-    render conn, "login.html"
-  end
-
-  def logout(conn, _) do
-    conn
-	  |> Guardian.Plug.sign_out
-	  |> redirect(to: session_path(conn, :login))
-  end
-
-  def unauthenticated(conn, _params) do
-    conn
-    |> put_flash(:info, "You must be signed in to access this page")
-    |> redirect(to: session_path(conn, :post_login))
-  end
-
-  def unauthorized(conn, _params) do
+  def unauthenticated(conn, _) do
     conn
     |> put_flash(:error, "You must be signed in to access this page")
-    |> redirect(to: session_path(conn, :post_login))
+    |> redirect(to: session_path(conn, :login))
+  end
+
+  def unauthorized(conn, _) do
+    conn
+    |> put_flash(:error, "You must be signed in to access this page")
+    |> redirect(to: session_path(conn, :login))
   end
 
 end
