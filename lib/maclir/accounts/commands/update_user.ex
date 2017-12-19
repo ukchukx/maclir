@@ -2,7 +2,7 @@ defmodule MacLir.Accounts.Commands.UpdateUser do
   defstruct [
     user_uuid: "",
     username: "",
-    email: "",
+    email: nil,
     password: "",
     hashed_password: "",
     phone: "",
@@ -23,9 +23,8 @@ defmodule MacLir.Accounts.Commands.UpdateUser do
   validates :user_uuid, uuid: true
 
   validates :username,
-    presence: [message: "can't be empty"],
-    length: [min: 4],
-    format: [with: ~r/^[a-z0-9]+$/, allow_nil: true, allow_blank: true, message: "is invalid"],
+    length: [min: 4, allow_blank: true],
+    format: [with: ~r/^[a-z_0-9]+$/, allow_nil: true, allow_blank: true, message: "is invalid"],
     string: true,
     by: &UniqueUsername.validate/2
 
@@ -35,7 +34,7 @@ defmodule MacLir.Accounts.Commands.UpdateUser do
     by: &UniqueEmail.validate/2
 
   validates :phone, 
-    phone: true, 
+    phone: [allow_blank: true], 
     by: &UniquePhone.validate/2
 
   validates :hashed_password, string: [allow_nil: true, allow_blank: true]

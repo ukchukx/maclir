@@ -104,21 +104,37 @@ defmodule MacLir.AccountsTest do
 
   describe "update user" do
     @tag :integration
-    test "should succeed with valid data" do
+    test "should succeed with valid username" do
       assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
-      assert {:ok, %User{} = user} = 
-        Accounts.update_user(user, 
-          username: "jakeupdated", 
-          email: "jake@jake.jake", 
-          phone: "08010987654",
-          role: "admin",
-          longitude: -80,
-          latitude: -80)
-
+      assert {:ok, %User{} = user} = Accounts.update_user(user, username: "jakeupdated")
       assert user.username == "jakeupdated"
-      assert user.email == "jake@jake.jake"
+    end
+
+    @tag :integration
+    test "should succeed with valid email" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
+      assert {:ok, %User{} = user} = Accounts.update_user(user, email: "jakesquared@jake.jake")
+      assert user.email == "jakesquared@jake.jake"
+    end
+
+    @tag :integration
+    test "should succeed with valid phone" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
+      assert {:ok, %User{} = user} = Accounts.update_user(user, phone: "08010987654")
       assert user.phone == "08010987654"
+    end
+
+    @tag :integration
+    test "should succeed with valid role" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
+      assert {:ok, %User{} = user} = Accounts.update_user(user, role: "admin")
       assert user.role == "admin"
+    end
+
+    @tag :integration
+    test "should succeed with valid location" do
+      assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
+      assert {:ok, %User{} = user} = Accounts.update_user(user, longitude: -80, latitude: -80)
       assert user.latitude == -80
       assert user.longitude == -80
     end

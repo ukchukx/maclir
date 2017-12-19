@@ -45,6 +45,7 @@ defmodule MacLirWeb.SessionController do
       	IO.inspect "unauthenticated", label: "session"
         conn
         |> assign(:show_header, false)
+        |> put_flash(:error, "Wrong phone number or password")
 	      |> render("login.html")
     end
   end
