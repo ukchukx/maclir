@@ -65,10 +65,6 @@ exports.config = {
   },
 
   npm: {
-    enabled: true,
-    globals: {
-      Vue: "vue/dist/vue.common.js",
-      Vue2Leaflet: "vue2-leaflet"
-    }
+    enabled: true
   }
 };

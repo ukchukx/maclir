@@ -1,13 +1,4 @@
-<div id="map" class="p-0 m-0">
-	<v-map ref="map" :zoom="zoom" :center="center" :options="mapOptions">
-	<v-marker 
-		v-for="marker, row in markers" 
-		:lat-lng="marker.coords" 
-		:key="row">
-		<v-popup :content="marker.label"></v-popup>
-	</v-marker>
-	</v-map>
-</div>
+<div id="map" class="p-0 m-0"></div>
 <script src="https://unpkg.com/es6-promise@4.0.5/dist/es6-promise.min.js"></script>
 <script>ES6Promise.polyfill();</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= gmap_key() %>" async defer></script>

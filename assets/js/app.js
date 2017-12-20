@@ -22,11 +22,6 @@ import "phoenix_html"
 import loadView from "./views/loader";
 
 
-Vue.component('v-map', Vue2Leaflet.Map);
-Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
-Vue.component('v-marker', Vue2Leaflet.Marker);
-Vue.component( 'v-popup', Vue2Leaflet.Popup);
-
 function handleDOMContentLoaded() {
   // Get the current view name
   const viewName = document.getElementsByTagName('body')[0].dataset.jsViewName;

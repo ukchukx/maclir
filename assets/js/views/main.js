@@ -10,6 +10,7 @@ export default class MainView {
   }
 
   unmount() {
+    navigator.geolocation.clearWatch(this.watchID);
     console.log('MainView unmounted');
   }
 
@@ -35,39 +36,64 @@ export default class MainView {
 
   setupMap() {
   	if (!document.querySelector('#map')) return;
-  	let mapComponent = new Vue({
-      el: '#map',
-      data() {
-        return {
-          zoom: 15,
-          center: [9.1490051,7.3233646],
-          markers: [
-            { coords: [9.1490051,7.3233646], label: "~user1" },
-            { coords: [9.1499061,7.3276318], label: "~user2"},
-          ],
-          mapOptions: { 
-          	zoomControl: false,
-          	attributionControl: false
-          }
-        }
-      },
-      beforeCreate() {
-        navigator.geolocation.getCurrentPosition((position) => {
-          console.log('position', position);
-          this.center = [position.coords.latitude, position.coords.longitude];
-          this.markers.push({ coords: [...this.center], label: "me" });
-        }, (err) => console.log(err), { enableHighAccuracy: true });
+    new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        position => resolve(position), 
+        err => reject(err), 
+        { enableHighAccuracy: true }
+      );      
+    })
+    .then((pos) => {
+      console.log('position', pos);
+      this.coords = [pos.coords.latitude, pos.coords.longitude];
+      return true;
+    },(err) => {
+      console.err('position', err);
+      toastr.error('Grant location access for this app to work');
+      return false;
+    })
+    .then((hasCoords) => {
+      if (hasCoords) {
+        const mapCenter = [...this.coords];
+        const zoomLevel = 15;
+
+        this.map = L.map('map', {
+          zoomControl: false,
+          attributionControl: false
+        })
+        .setView(mapCenter, zoomLevel);
+
+        this._roadMap = L.gridLayer.googleMutant({
+          type: 'roadmap',
+          styles: styles.mutedBlue
+        }).addTo(this.map);
+
+        L.control.zoom({
+         	position:'bottomright'
+    		}).addTo(this.map);
+
+        const markers = [
+                { coords: [9.1490051,7.3233646], label: "~user1" },
+                { coords: [9.1499061,7.3276318], label: "~user2"},
+                { coords: mapCenter, label: "~me"},
+              ];
+        markers.map(mark => this.addMarker(mark)); 
+        // Register a watcher for user location changes
+        this.watchID = navigator.geolocation.watchPosition(this.updateUserLocation.bind(this));
       }
     });
 
-    this.map = mapComponent.$refs.map.mapObject;
-    this.roads = L.gridLayer.googleMutant({
-      type: 'roadmap',
-      styles: styles.mutedBlue
-    }).addTo(this.map);
 
-    L.control.zoom({
-     	position:'bottomright'
-		}).addTo(this.map);
+  }
+
+  addMarker({ coords, label }) {
+    const marker = L.marker(coords, { title: label }).addTo(this.map);
+    marker.bindPopup(label);
+    return marker;
+  }
+
+  updateUserLocation(position) {
+    const {latitude, longitude} = position.coords;
+    this.map.panTo([latitude, longitude]);
   }
 }
