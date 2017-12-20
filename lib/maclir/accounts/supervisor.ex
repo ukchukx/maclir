@@ -9,7 +9,9 @@ defmodule MacLir.Accounts.Supervisor do
 
   def init(_arg) do
     Supervisor.init([
-      Accounts.Projectors.User
+      Accounts.Projectors.User,
+      Accounts.Projectors.Friend,
+      Accounts.Workflows.CreateFriendFromUser,
     ], strategy: :one_for_one)
   end
 end

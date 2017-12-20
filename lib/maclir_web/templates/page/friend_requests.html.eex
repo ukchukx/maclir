@@ -1,9 +1,11 @@
 <div class="side-panel">
+	<h2>Received requests</h2>
+	<%= if @conn |> received_friend_requests |> Enum.count > 0 do %>
 	<div class="list-group">
-		<%= for n <- friend_requests(@conn) do %>
+		<%= for n <- received_friend_requests(@conn) do %>
 	  <a href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
 	    <div class="d-flex w-100 justify-content-between">
-	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>) wants to share locations with you</h5>
+	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>)</h5>
 	    </div>
 	    <p class="mb-1">
 	    	<button type="button" class="btn btn-flat btn-sm blue">Share</button>
@@ -13,5 +15,23 @@
 	  </a>
 		<% end %>
 	</div>
+	<% end %>
+
+	<h2>Sent requests</h2>
+	<%= if @conn |> sent_friend_requests |> Enum.count > 0 do %>
+	<div class="list-group">
+		<%= for n <- sent_friend_requests(@conn) do %>
+	  <a href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
+	    <div class="d-flex w-100 justify-content-between">
+	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>)</h5>
+	    </div>
+	    <p class="mb-1">
+	    	<button type="button" class="btn btn-flat btn-sm blue">Cancel</button>
+	    </p>
+	    <small>3 days ago</small>
+	  </a>
+		<% end %>
+	</div>
+	<% end %>
 </div>
 <%= MacLirWeb.LayoutView.render "map.html", assigns %>

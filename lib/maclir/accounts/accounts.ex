@@ -3,9 +3,9 @@ defmodule MacLir.Accounts do
   The boundary for the Accounts system.
   """
 
-  alias MacLir.Accounts.Commands.{RegisterUser,UpdateUser}
+  alias MacLir.Accounts.Commands.{CreateFriend,RegisterUser,UpdateUser}
   alias MacLir.Accounts.Queries.{UserByPhone,UserByUsername,UserByEmail}
-  alias MacLir.Accounts.Projections.User
+  alias MacLir.Accounts.Projections.{Friend,User}
   alias MacLir.{Repo,Router}
 
   @doc """
@@ -24,6 +24,24 @@ defmodule MacLir.Accounts do
 
     with :ok <- Router.dispatch(register_user, consistency: :strong) do
       get(User, uuid)
+    else
+      reply -> reply
+    end
+  end
+
+  @doc """
+  Create a friend.
+  """
+  def create_friend(attrs) do
+    uuid = UUID.uuid4()
+
+    create_friend =
+      attrs
+      |> CreateFriend.new
+      |> CreateFriend.assign_uuid(uuid)
+
+    with :ok <- Router.dispatch(create_friend, consistency: :strong) do
+      get(Friend, uuid)
     else
       reply -> reply
     end

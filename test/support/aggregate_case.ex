@@ -14,18 +14,39 @@ defmodule MacLir.AggregateCase do
       # assert that the expected events are returned when the given commands
       # have been executed
       defp assert_events(commands, expected_events) do
-        assert execute(List.wrap(commands)) == expected_events
+        assert_events(%@aggregate_module{}, commands, expected_events)
       end
 
-      # execute one or more commands against the aggregate
-      defp execute(commands) do
-        {_, events} = Enum.reduce(commands, {%@aggregate_module{}, []}, fn (command, {aggregate, _}) ->
-          events = @aggregate_module.execute(aggregate, command)
+      defp assert_events(aggregate, commands, expected_events) do
+        {_aggregate, events, error} = execute(commands, aggregate)
 
-          {evolve(aggregate, events), events}
+        assert is_nil(error)
+        assert List.wrap(events) == expected_events
+      end
+
+      defp assert_error(commands, expected_error) do
+        assert_error(%@aggregate_module{}, commands, expected_error)
+      end
+
+      defp assert_error(aggregate, commands, expected_error) do
+        {_aggregate, _events, error} = execute(commands, aggregate)
+
+        assert error == expected_error
+      end
+
+      # execute one or more commands against an aggregate
+      defp execute(commands, aggregate \\ %@aggregate_module{})
+      defp execute(commands, aggregate) do
+        commands
+        |> List.wrap()
+        |> Enum.reduce({aggregate, [], nil}, fn
+          (command, {aggregate, _events, nil}) ->
+            case @aggregate_module.execute(aggregate, command) do
+              {:error, reason} = error -> {aggregate, nil, error}
+              events -> {evolve(aggregate, events), events, nil}
+            end
+          (command, {aggregate, _events, _error} = reply) -> reply
         end)
-
-        List.wrap(events)
       end
 
       # apply the given events to the aggregate state

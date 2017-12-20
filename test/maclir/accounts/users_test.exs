@@ -1,4 +1,4 @@
-defmodule MacLir.AccountsTest do
+defmodule MacLir.UsersTest do
   use MacLir.DataCase
 
   alias MacLir.Accounts

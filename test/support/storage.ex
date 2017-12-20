@@ -32,6 +32,7 @@ defmodule MacLir.Storage do
     """
     TRUNCATE TABLE
       accounts_users,
+      accounts_friends,
       projection_versions
     RESTART IDENTITY;
     """

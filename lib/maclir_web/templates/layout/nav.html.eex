@@ -14,9 +14,9 @@
         <a class="nav-link waves-effect" href="<%= page_path(@conn, :friend_requests) %>">
             <i class="fa fa-bell blue-text"></i>
             <span class="d-none d-md-inline-block">Friend requests</span>
-            <%= if @conn |> MacLirWeb.PageView.friend_requests |> Enum.count > 0 do %>
+            <%= if @conn |> MacLirWeb.PageView.sent_friend_requests |> Enum.count > 0 do %>
             <span class="badge blue">
-              <%= @conn |> MacLirWeb.PageView.friend_requests |> Enum.count %>
+              <%= @conn |> MacLirWeb.PageView.sent_friend_requests |> Enum.count %>
             </span> 
             <% end %>
         </a>

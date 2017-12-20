@@ -18,6 +18,15 @@ defmodule MacLir.Factory do
     }
   end
 
+  def author_factory do
+    %{
+      user_uuid: UUID.uuid4(),
+      username: "jake",
+      bio: "I like to skateboard",
+      image: "https://i.stack.imgur.com/xHWG8.jpg",
+    }
+  end
+
   def register_user_factory do
     struct(RegisterUser, build(:user))
   end

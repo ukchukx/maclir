@@ -15,7 +15,6 @@ defmodule MacLir.Accounts.Commands.UpdateUser do
   use ExConstructor
   use Vex.Struct
 
-  alias MacLir.Accounts.Commands.UpdateUser
   alias MacLir.Accounts.Projections.User
   alias MacLir.Accounts.Validators.{UniqueEmail,UniqueUsername,UniquePhone}
   alias MacLir.Auth
@@ -45,37 +44,37 @@ defmodule MacLir.Accounts.Commands.UpdateUser do
   @doc """
   Assign the user identity
   """
-  def assign_user(%UpdateUser{} = update_user, %User{uuid: user_uuid}) do
-    %UpdateUser{update_user | user_uuid: user_uuid}
+  def assign_user(%__MODULE__{} = update_user, %User{uuid: user_uuid}) do
+    %__MODULE__{update_user | user_uuid: user_uuid}
   end
 
   @doc """
   Convert username to lowercase characters
   """
-  def downcase_username(%UpdateUser{username: username} = update_user) do
+  def downcase_username(%__MODULE__{username: username} = update_user) do
     case is_binary(username) do
       false -> update_user
-      true ->  %UpdateUser{update_user | username: String.downcase(username)}
+      true ->  %__MODULE__{update_user | username: String.downcase(username)}
     end
   end
 
   @doc """
   Convert email address to lowercase characters
   """
-  def downcase_email(%UpdateUser{email: email} = update_user) do
+  def downcase_email(%__MODULE__{email: email} = update_user) do
     case is_binary(email) do
       false -> update_user
-      true ->  %UpdateUser{update_user | email: String.downcase(email)}
+      true ->  %__MODULE__{update_user | email: String.downcase(email)}
     end
   end
 
   @doc """
   Hash the password, clear the original password
   """
-  def hash_password(%UpdateUser{password: ""} = update_user), do: update_user
-  def hash_password(%UpdateUser{password: nil} = update_user), do: update_user
-  def hash_password(%UpdateUser{password: password} = update_user) do
-    %UpdateUser{update_user |
+  def hash_password(%__MODULE__{password: ""} = update_user), do: update_user
+  def hash_password(%__MODULE__{password: nil} = update_user), do: update_user
+  def hash_password(%__MODULE__{password: password} = update_user) do
+    %__MODULE__{update_user |
       password: nil,
       hashed_password: Auth.hash_password(password),
     }

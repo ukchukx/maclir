@@ -14,7 +14,6 @@ defmodule MacLir.Accounts.Commands.RegisterUser do
   use ExConstructor
   use Vex.Struct
 
-  alias MacLir.Accounts.Commands.RegisterUser
   alias MacLir.Accounts.Validators.{UniqueEmail,UniqueUsername,UniquePhone}
   alias MacLir.Auth
 
@@ -44,17 +43,17 @@ defmodule MacLir.Accounts.Commands.RegisterUser do
   @doc """
   Assign a unique identity for the user
   """
-  def assign_uuid(%RegisterUser{} = register_user, uuid) do
-    %RegisterUser{register_user | user_uuid: uuid}
+  def assign_uuid(%__MODULE__{} = register_user, uuid) do
+    %__MODULE__{register_user | user_uuid: uuid}
   end
 
   @doc """
   Convert username to lowercase characters
   """
-  def downcase_username(%RegisterUser{username: username} = register_user) do
+  def downcase_username(%__MODULE__{username: username} = register_user) do
     case is_binary(username) do
       false -> register_user
-      true -> %RegisterUser{register_user | username: String.downcase(username)}
+      true -> %__MODULE__{register_user | username: String.downcase(username)}
         
     end
   end
@@ -62,18 +61,18 @@ defmodule MacLir.Accounts.Commands.RegisterUser do
   @doc """
   Convert email address to lowercase characters
   """
-  def downcase_email(%RegisterUser{email: email} = register_user) do
+  def downcase_email(%__MODULE__{email: email} = register_user) do
     case is_binary(email) do
       false -> register_user
-      true -> %RegisterUser{register_user | email: String.downcase(email)}
+      true -> %__MODULE__{register_user | email: String.downcase(email)}
     end
   end
 
   @doc """
   Hash the password, clear the original password
   """
-  def hash_password(%RegisterUser{password: password} = register_user) do
-    %RegisterUser{register_user |
+  def hash_password(%__MODULE__{password: password} = register_user) do
+    %__MODULE__{register_user |
       password: nil,
       hashed_password: Auth.hash_password(password),
     }

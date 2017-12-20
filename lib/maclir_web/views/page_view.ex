@@ -13,12 +13,21 @@ defmodule MacLirWeb.PageView do
   	|> Enum.map(fn _ -> map end)
   end
 
-  def friend_requests(_conn) do
+  def sent_friend_requests(_conn) do
+    map = %{
+      user: %{username: "janedoe", phone: "+234805xxxyyyy"}
+    }
+
+    [1, 2, 3]
+    |> Enum.map(fn _ -> map end)
+  end
+
+  def received_friend_requests(_conn) do
   	map = %{
   		user: %{username: "johndoe", phone: "+234802xxxyyyy"}
   	}
 
-  	[1, 2, 3, 4, 5]
+  	[1, 2, 3]
   	|> Enum.map(fn _ -> map end)
   end
 
