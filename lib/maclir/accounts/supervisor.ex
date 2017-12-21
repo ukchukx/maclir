@@ -12,6 +12,7 @@ defmodule MacLir.Accounts.Supervisor do
       Accounts.Projectors.User,
       Accounts.Projectors.Friend,
       Accounts.Workflows.CreateFriendFromUser,
+      Accounts.Workflows.RelayFriendEvents
     ], strategy: :one_for_one)
   end
 end

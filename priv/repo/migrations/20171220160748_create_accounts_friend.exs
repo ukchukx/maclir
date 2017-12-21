@@ -7,7 +7,6 @@ defmodule MacLir.Repo.Migrations.CreateAccountsFriends do
       add :user_uuid, :uuid
       add :username, :string
       add :friends, {:array, :binary_id}
-      add :sent_requests, {:array, :binary_id}
       add :received_requests, {:array, :binary_id}
 
       timestamps()

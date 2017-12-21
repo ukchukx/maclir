@@ -3,8 +3,5 @@ defmodule MacLir.Accounts.Queries.UserByPhone do
 
   alias MacLir.Accounts.Projections.User
 
-  def new(phone) do
-    from u in User,
-    where: u.phone == ^phone
-  end
+  def new(phone), do: from u in User, where: u.phone == ^phone
 end

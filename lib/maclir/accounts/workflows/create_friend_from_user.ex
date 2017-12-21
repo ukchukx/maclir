@@ -14,3 +14,4 @@ defmodule MacLir.Accounts.Workflows.CreateFriendFromUser do
     end
   end
 end
+

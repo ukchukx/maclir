@@ -3,8 +3,5 @@ defmodule MacLir.Accounts.Queries.UserByEmail do
 
   alias MacLir.Accounts.Projections.User
 
-  def new(email) do
-    from u in User,
-    where: u.email == ^email
-  end
+  def new(email), do: from u in User, where: u.email == ^email
 end
