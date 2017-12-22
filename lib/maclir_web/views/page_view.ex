@@ -2,34 +2,32 @@ defmodule MacLirWeb.PageView do
   use MacLirWeb, :view
 
   alias MacLirWeb.LayoutView
+  alias MacLir.Accounts
 
-  def friends(_conn) do
+  def friends(%{assigns: %{user: %{uuid: uuid}}} = _conn) do
   	map = %{
   		image: "https://mdbootstrap.com/img/Photos/Avatars/avatar-13.jpg",
-  		username: "johndoe"
   	}
 
-  	[1, 2, 3, 4, 5]
-  	|> Enum.map(fn _ -> map end)
+  	uuid
+    |> Accounts.user_friends
+  	|> Enum.map(&(Map.merge(&1, map)))
   end
+  def friends(_), do: []
 
-  def sent_friend_requests(_conn) do
-    map = %{
-      user: %{username: "janedoe", phone: "+234805xxxyyyy"}
-    }
-
-    [1, 2, 3]
-    |> Enum.map(fn _ -> map end)
+  def sent_friend_requests(%{assigns: %{user: %{uuid: uuid}}} = _conn) do
+    uuid
+    |> Accounts.user_sent_requests
+    |> Enum.map(&(%{user: Accounts.user_by_uuid(&1.user_uuid)}))
   end
+  def sent_friend_requests(_), do: []
 
-  def received_friend_requests(_conn) do
-  	map = %{
-  		user: %{username: "johndoe", phone: "+234802xxxyyyy"}
-  	}
-
-  	[1, 2, 3]
-  	|> Enum.map(fn _ -> map end)
+  def received_friend_requests(%{assigns: %{user: %{uuid: uuid}}} = _conn) do
+  	uuid
+    |> Accounts.user_received_requests
+    |> Enum.map(&(%{user: Accounts.user_by_uuid(&1.user_uuid)}))
   end
+  def received_friend_requests(_), do: []
 
   def current_user(conn) do
     case LayoutView.current_user(conn) do

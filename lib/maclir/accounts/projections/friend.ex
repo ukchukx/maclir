@@ -9,6 +9,7 @@ defmodule MacLir.Accounts.Projections.Friend do
     field :username, :string
     field :friends, {:array, :binary_id}, default: []
     field :received_requests, {:array, :binary_id}, default: []
+    field :sent_requests, {:array, :binary_id}, default: [], virtual: true
 
     timestamps()
   end

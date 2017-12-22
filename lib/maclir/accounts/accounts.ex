@@ -16,6 +16,7 @@ defmodule MacLir.Accounts do
 
   alias MacLir.Accounts.Queries.{
     FriendByUser,
+    SentFriendRequests,
     UserByPhone,
     UserByUsername,
     UserByEmail
@@ -179,6 +180,43 @@ defmodule MacLir.Accounts do
   def user_by_email(_), do: nil
 
   @doc """
+  Get friends user has sent friend requests to
+  """
+  def user_sent_requests(user_uuid) do
+    %Friend{sent_requests: sent_requests} = 
+      user_uuid
+      |> FriendByUser.new
+      |> Repo.one
+      |> load_sent_requests
+
+    Enum.map(sent_requests, &friend_by_uuid/1)
+  end
+
+  @doc """
+  Get friends user has sent friend requests to
+  """
+  def user_received_requests(user_uuid) do
+    %Friend{received_requests: received_requests} = 
+      user_uuid
+      |> FriendByUser.new
+      |> Repo.one
+
+    Enum.map(received_requests, &friend_by_uuid/1)
+  end
+
+  @doc """
+  Get user's friends
+  """
+  def user_friends(user_uuid) do
+    %Friend{friends: friends} = 
+      user_uuid
+      |> FriendByUser.new
+      |> Repo.one
+
+    Enum.map(friends, &friend_by_uuid/1)
+  end
+
+  @doc """
   Get a single friend by their UUID
   """
   def friend_by_uuid(uuid) when is_binary(uuid) do
@@ -193,6 +231,20 @@ defmodule MacLir.Accounts do
     |> FriendByUser.new
     |> Repo.one
   end
+
+  @doc """
+  Load sent requests into virtual field
+  """
+  def load_sent_requests(%Friend{uuid: uuid} = friend) do
+    sent_requests = 
+      uuid
+      |> SentFriendRequests.new
+      |> Repo.all
+      |> Enum.map(&(&1.uuid))
+
+    %Friend{friend | sent_requests: sent_requests}
+  end
+  def load_sent_requests(something_else), do: something_else
 
   defp get(schema, uuid) do
     case Repo.get(schema, uuid) do

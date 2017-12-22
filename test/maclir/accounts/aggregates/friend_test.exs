@@ -18,5 +18,14 @@ defmodule MacLir.Accounts.FriendTest do
         assert event.username == user.username
       end
     end
+
+    @tag :unit
+    test "should have sent_requests populated after sending a friend request", context do
+      [alice: a, bob: b] = create_friends(context)
+      a = Accounts.add_friend(a, b) |> Accounts.load_sent_requests
+
+      assert 1 == Enum.count(a.sent_requests)
+      assert Enum.member?(a.sent_requests, b.uuid)
+    end
   end
 end

@@ -5,8 +5,16 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
 
   alias MacLir.Router
   alias MacLir.Accounts.Commands.{AcceptFriend,RemoveFriend}
-  alias MacLir.Accounts.Events.{FriendAdded,FriendRemoved}
+  alias MacLir.Accounts.Events.{
+    FriendAdded,
+    FriendRemoved,
+    FriendRequestRejected,
+    FriendRequestCancelled,
+    FriendRequestReceived
+  }
   alias __MODULE__.Cache
+
+  # TODO: Broadcast events to users
 
   def init do
     Cache.start_link()
@@ -45,6 +53,20 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
         end        
     end
   end
+
+  def handle(%FriendRequestReceived{from_uuid: _from, friend_uuid: _friend}, _metadata) do
+    :ok
+  end
+
+  def handle(%FriendRequestRejected{to_uuid: _to, friend_uuid: _friend}, _metadata) do
+    :ok
+  end
+
+  def handle(%FriendRequestCancelled{from_uuid: _from, friend_uuid: _friend}, _metadata) do
+    :ok
+  end
+
+
 
   defmodule Cache do
     use GenServer

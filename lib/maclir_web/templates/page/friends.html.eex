@@ -1,12 +1,14 @@
 <div class="side-panel">
 	<div class="list-group">
-		<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-      <div class="md-form">
-		    <i class="fa fa-phone prefix"></i>
-		    <input type="text" id="add-friend" class="form-control">
-		    <label for="add-friend">Mobile phone number</label>
-			</div>
-      <button type="button" class="btn btn-flat btn-sm blue">Add friend</button>
+		<a href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
+			<%= form_for @conn, page_path(@conn, :post_friend_request), [as: :friend, id: "friend-form"], fn _f -> %>
+	      <div class="md-form">
+			    <i class="fa fa-phone prefix"></i>
+			    <input type="text" name="friend[phone]" id="phone" class="form-control">
+			    <label for="add-friend">Phone number</label>
+				</div>
+	      <button type="submit" class="btn btn-flat btn-sm blue">Add friend</button>
+			<% end %>
 	  </a>
 		<%= for friend <- friends(@conn) do %>
 		<div class="media list-group-item d-flex">
