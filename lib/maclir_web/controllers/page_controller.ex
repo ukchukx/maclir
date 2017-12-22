@@ -60,7 +60,7 @@ defmodule MacLirWeb.PageController do
           |> render("friends.html", user: user)
         else
           reply ->
-            IO.inspect reply, label: "post_profile"
+            IO.inspect reply, label: "post_friend_request"
             conn
             |> put_flash(:error, "Could not send request")
             |> render("friends.html", user: user)
@@ -68,5 +68,21 @@ defmodule MacLirWeb.PageController do
     end
   end
 
+  def post_cancel_friend_request(conn, %{"cancel" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+    from_friend = Accounts.friend_by_user(user_uuid)
+    to_friend = Accounts.friend_by_uuid(uuid)
+
+    with %Friend{} <- Accounts.cancel_friend_request(from_friend, to_friend) do
+      conn
+      |> put_flash(:info, "Request cancelled")
+      |> redirect(to: page_path(conn, :friend_requests))
+    else
+      reply ->
+        IO.inspect reply, label: "cancel_friend_request"
+        conn
+        |> put_flash(:error, "Could not cancel request")
+        |> redirect(to: page_path(conn, :friend_requests))
+    end
   end
 end

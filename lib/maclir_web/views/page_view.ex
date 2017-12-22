@@ -18,7 +18,7 @@ defmodule MacLirWeb.PageView do
   def sent_friend_requests(%{assigns: %{user: %{uuid: uuid}}} = _conn) do
     uuid
     |> Accounts.user_sent_requests
-    |> Enum.map(&(%{user: Accounts.user_by_uuid(&1.user_uuid)}))
+    |> Enum.map(&(%{user: Accounts.user_by_uuid(&1.user_uuid), friend: &1}))
   end
   def sent_friend_requests(_), do: []
 

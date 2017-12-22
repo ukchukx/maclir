@@ -26,7 +26,10 @@
 	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>)</h5>
 	    </div>
 	    <p class="mb-1">
-	    	<button type="button" class="btn btn-flat btn-sm blue">Cancel</button>
+	    	<%= form_for @conn, page_path(@conn, :post_cancel_friend_request), [as: :cancel], fn _f -> %>
+	    	<input type="hidden" name="cancel[uuid]" value="<%= n.friend.uuid %>">
+	    	<button type="submit" class="btn btn-flat btn-sm blue">Cancel</button>
+	    	<% end %>
 	    </p>
 	    <small>3 days ago</small>
 	  </a>
