@@ -27,7 +27,6 @@ defmodule MacLirWeb.PageController do
     user = Guardian.Plug.current_resource(conn)
 
     with {:ok, %User{} = user} <- Accounts.update_user(user, params) do
-      IO.inspect user, label: "user"
       conn
       |> Guardian.Plug.sign_in(user, :access)
       |> put_flash(:info, "Profile updated")

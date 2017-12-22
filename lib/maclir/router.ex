@@ -9,8 +9,9 @@ defmodule MacLir.Router do
     CreateFriend,
     RejectFriend,
     RemoveFriend,
-  	CreateFriend,
-  	RegisterUser,
+    CreateFriend,
+    RegisterUser,
+    UpdateFriend,
   	UpdateUser
   }
   alias MacLir.Support.Middleware.{Uniqueness,Validate}
@@ -25,6 +26,7 @@ defmodule MacLir.Router do
     CancelFriend,
     CreateFriend,
     RejectFriend,
-    RemoveFriend
+    RemoveFriend,
+    UpdateFriend
   ], to: Friend, identity: :friend_uuid
 end

@@ -9,7 +9,8 @@ defmodule MacLir.Accounts.Projectors.Friend do
     FriendRequestRejected,
     FriendRemoved,
     FriendRequestCancelled,
-    FriendRequestReceived
+    FriendRequestReceived,
+    FriendUpdated,
   }
   alias MacLir.Accounts.Projections.Friend
   alias MacLir.Accounts.Queries.FriendByUUID
@@ -22,6 +23,10 @@ defmodule MacLir.Accounts.Projectors.Friend do
       friends: [],
       received_requests: [],
     })
+  end
+
+  project %FriendUpdated{username: username, friend_uuid: uuid} do
+    Ecto.Multi.update_all(multi, :friend, friend_query(uuid), set: [username: username])
   end
 
   project %FriendAdded{friend_uuid: uuid, to_uuid: friend_uuid} do

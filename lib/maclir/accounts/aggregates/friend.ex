@@ -13,7 +13,8 @@ defmodule MacLir.Accounts.Aggregates.Friend do
     CancelFriend,
     CreateFriend,
     RejectFriend,
-    RemoveFriend
+    RemoveFriend,
+    UpdateFriend,
   }
 
   alias MacLir.Accounts.Events.{
@@ -22,7 +23,8 @@ defmodule MacLir.Accounts.Aggregates.Friend do
     FriendRequestRejected,
     FriendRemoved,
     FriendRequestCancelled,
-    FriendRequestReceived
+    FriendRequestReceived,
+    FriendUpdated,
   }
   alias MacLir.Accounts
 
@@ -35,6 +37,13 @@ defmodule MacLir.Accounts.Aggregates.Friend do
       user_uuid: create.user_uuid,
       username: create.username,
     }
+  end
+
+  @doc """
+  Updates a friend
+  """
+  def execute(%__MODULE__{uuid: uuid}, %UpdateFriend{username: username}) do
+    %FriendUpdated{friend_uuid: uuid, username: username}
   end
 
   @doc """
@@ -111,6 +120,10 @@ defmodule MacLir.Accounts.Aggregates.Friend do
       user_uuid: created.user_uuid,
       username: created.username,
     }
+  end
+
+  def apply(%__MODULE__{} = friend, %FriendUpdated{username: username}) do
+    %__MODULE__{friend | username: username}
   end
 
   def apply(%__MODULE__{received_requests: reqs} = friend, %FriendRequestReceived{from_uuid: from_uuid}) do
