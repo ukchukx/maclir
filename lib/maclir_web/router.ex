@@ -42,6 +42,7 @@ defmodule MacLirWeb.Router do
     get "/", PageController, :home
     get "/friends", PageController, :friends
     post "/friends", PageController, :post_friend_request
+    post "/friends/remove", PageController, :post_remove_friend
     get "/friend-requests", PageController, :friend_requests
     post "/friend-requests/cancel", PageController, :post_cancel_friend_request
     post "/friend-requests/reject", PageController, :post_reject_friend_request

@@ -23,7 +23,7 @@
     </li>
     <li class="nav-item avatar dropdown">
         <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img src="https://www.buira.org/assets/images/shared/default-profile.png" class="avatar-img img-fluid rounded-circle z-depth-0"></a>
+          <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-13.jpg" class="avatar-img img-fluid rounded-circle z-depth-0"></a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="<%= page_path(@conn, :profile) %>">Profile</a>
             <a class="dropdown-item" href="<%= session_path(@conn, :logout) %>">Logout</a>

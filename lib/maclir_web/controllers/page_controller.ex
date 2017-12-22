@@ -113,4 +113,18 @@ defmodule MacLirWeb.PageController do
         redirect conn, to: page_path(conn, :friend_requests)
     end
   end
+
+  def post_remove_friend(conn, %{"remove" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+    from_friend = Accounts.friend_by_user(user_uuid)
+    to_friend = Accounts.friend_by_uuid(uuid)
+
+    with %Friend{} <- Accounts.remove_friend(from_friend, to_friend) do
+      redirect conn, to: page_path(conn, :friends)
+    else
+      reply ->
+        IO.inspect reply, label: "remove_friend"
+        redirect conn, to: page_path(conn, :friends)
+    end
+  end
 end
