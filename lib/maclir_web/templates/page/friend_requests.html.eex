@@ -8,8 +8,14 @@
 	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>)</h5>
 	    </div>
 	    <p class="mb-1">
-	    	<button type="button" class="btn btn-flat btn-sm blue">Share</button>
-	    	<button type="button" class="btn btn-flat btn-sm blue">Decline</button>
+	    	<%= form_for @conn, page_path(@conn, :post_accept_friend_request), [as: :accept, class: "d-inline"], fn _f -> %>
+	    	<input type="hidden" name="accept[uuid]" value="<%= n.friend.uuid %>">
+	    	<button type="submit" class="btn btn-flat btn-sm blue">Share</button>
+	    	<% end %>
+	    	<%= form_for @conn, page_path(@conn, :post_reject_friend_request), [as: :reject, class: "d-inline"], fn _f -> %>
+	    	<input type="hidden" name="reject[uuid]" value="<%= n.friend.uuid %>">
+	    	<button type="submit" class="btn btn-flat btn-sm blue">Decline</button>
+	    	<% end %>
 	    </p>
 	    <small>3 days ago</small>
 	  </a>

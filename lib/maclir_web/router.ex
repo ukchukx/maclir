@@ -44,6 +44,8 @@ defmodule MacLirWeb.Router do
     post "/friends", PageController, :post_friend_request
     get "/friend-requests", PageController, :friend_requests
     post "/friend-requests/cancel", PageController, :post_cancel_friend_request
+    post "/friend-requests/reject", PageController, :post_reject_friend_request
+    post "/friend-requests/accept", PageController, :post_accept_friend_request
     get "/profile", PageController, :profile
     post "/profile", PageController, :post_profile
   end

@@ -85,4 +85,32 @@ defmodule MacLirWeb.PageController do
         |> redirect(to: page_path(conn, :friend_requests))
     end
   end
+
+  def post_accept_friend_request(conn, %{"accept" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+    from_friend = Accounts.friend_by_user(user_uuid)
+    to_friend = Accounts.friend_by_uuid(uuid)
+
+    with %Friend{} <- Accounts.accept_friend_request(from_friend, to_friend) do
+      redirect conn, to: page_path(conn, :friend_requests)
+    else
+      reply ->
+        IO.inspect reply, label: "accept_friend_request"
+        redirect conn, to: page_path(conn, :friend_requests)
+    end
+  end
+
+  def post_reject_friend_request(conn, %{"reject" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+    from_friend = Accounts.friend_by_user(user_uuid)
+    to_friend = Accounts.friend_by_uuid(uuid)
+
+    with %Friend{} <- Accounts.reject_friend_request(from_friend, to_friend) do
+      redirect conn, to: page_path(conn, :friend_requests)
+    else
+      reply ->
+        IO.inspect reply, label: "reject_friend_request"
+        redirect conn, to: page_path(conn, :friend_requests)
+    end
+  end
 end
