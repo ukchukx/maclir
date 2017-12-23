@@ -51,10 +51,9 @@ defmodule MacLir.UsersTest do
     end
 
     @tag :integration
-    test "should fail when phone is not Nigerian GSM number and return error" do
-      assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, phone: "084123456"))
-
-      assert errors == %{phone: ["is not a Nigerian GSM number"]}
+    test "should fail when phone is valid and return error" do
+      assert {:error, :validation_failure, errors} = Accounts.register_user(build(:user, phone: "notaphonenumber"))
+      assert errors == %{phone: ["is not a phone number"]}
     end
 
     @tag :integration

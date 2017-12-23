@@ -41,7 +41,7 @@ defmodule MacLirWeb.PageController do
   end
 
   def post_friend_request(conn, %{"friend" => %{"phone" => phone}}) do
-    %User{uuid: user_uuid} = user = Guardian.Plug.current_resource(conn)
+    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
     from_friend = Accounts.friend_by_user(user_uuid)
 
     case Accounts.user_by_phone(phone) do

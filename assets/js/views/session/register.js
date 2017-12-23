@@ -29,13 +29,15 @@ export default class View extends MainView {
       return true;
     }
 
+    if (!this.validatePhone()) toastr.error('Phone number not valid.');
+    if (!this.latInput.value) toastr.error('App will not work without location');
+
     e.returnValue = false;
     return true;
   }
 
   validatePhone() {
-    const str = this.phoneInput.value.trim();
-    return !!str.length && /^(\+?2340?|0)\d{10}$/g.test(str);
+    return /^\+?\d{1,15}$/g.test(this.phoneInput.value);
   }
 
   setCoords() {

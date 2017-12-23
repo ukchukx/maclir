@@ -30,7 +30,8 @@ export default class MainView {
   bootDropdown() {
   	// The first click on a dropdown does nothing, so 
   	// let's get the first click out of the way
-  	document.querySelector('.navbar .nav-item.dropdown > a').click();
+  	const el = document.querySelector('.navbar .nav-item.dropdown > a')
+    if (el) el.click();
   }
 
   handleSubmit(e) {

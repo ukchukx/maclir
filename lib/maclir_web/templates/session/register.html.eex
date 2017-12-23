@@ -18,8 +18,8 @@
             <!--Body-->
             <div class="md-form">
                 <i class="fa fa-phone prefix"></i>
-                <input type="text" name="session[phone]" class="form-control" id="phone">
-                <label for="phone">Phone number (must be a Nigerian GSM number)</label>
+                <input type="text" name="session[phone]" class="form-control" id="phone" placeholder="Should not contain spaces">
+                <label for="phone">Phone number (cannot be changed)</label>
             </div>
 
             <div class="md-form pb-3">
