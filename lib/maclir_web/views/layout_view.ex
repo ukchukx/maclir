@@ -6,6 +6,13 @@ defmodule MacLirWeb.LayoutView do
   end
 
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
+
+  def username(conn) do
+    case current_user(conn) do
+      nil -> ""
+      %{username: username} -> username
+    end
+  end
   
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
 

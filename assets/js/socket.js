@@ -5,22 +5,6 @@
 // and connect at the socket path in "lib/web/endpoint.ex":
 import {Socket, Presence} from "phoenix";
 
-
-
-let presences = {};
-
-const socket = new Socket("/socket", {
-	params: {token: window.userToken},
-  logger: (kind, msg, data) => {
-    console.log(`${kind} >> ${msg}`, data);
-  }
-});
-
-socket.connect();
-socket.onError(ev => console.error('socket error', ev));
-socket.onClose(ev => console.warn('socket closed', ev));
-
-
 // When server & client clocks are out of sync, we might sometimes get
 // 'in a few seconds', which is a weird message for a past event
 moment.fn.fromNowOrNow = function (a) {
@@ -30,78 +14,106 @@ moment.fn.fromNowOrNow = function (a) {
   return this.fromNow(a);
 }
 
-const renderPresences = (presences) => {
-  const lastSeenElems = [...document.querySelectorAll('small.last-seen')];
-  Presence.list(presences, (user, {metas}) => {
-    return {
-      user,
-      onlineAt: moment(new Date(metas[0].online_at)).fromNowOrNow()
-    }
-  })
-  .map(({user, onlineAt}) => {
-  	if (!lastSeenElems.length) return false;
-  	const elem = lastSeenElems.find(el => el.dataset.lastSeenUuid === user);
-  	if (!elem) return false;
-  	elem.innerHTML = `Last seen: ${onlineAt}`;
-  	return true;
-  }); 
-};
+class SocketHandler {
+	constructor() {
+		this.updatePresenceInterval = 60000; // 1 minute
+		this.presenceRenderingInterval = 30000; // half minute
+		this.presences = {};
+
+		this.socket = new Socket("/socket", {
+			params: {token: window.userToken},
+		  logger: (kind, msg, data) => console.log(`${kind} >> ${msg}`, data)
+		});
+
+		this.socket.connect();
+		this.socket.onError(ev => console.error('socket error', ev));
+		this.socket.onClose(ev => console.warn('socket closed', ev));
+		// Handle messages that are sent to friends' topics
+		this.socket.onMessage(({topic, event, payload}) => {
+			if (/^user_presence/.test(topic)) {
+			  if (event == "presence_diff") {
+			    this.handlePresenceDiff(payload);
+			  } else if (event == "presence_state") {
+			    this.handlePresenceState(payload);
+			  } else if (event == "presence_update") {
+			    this.handlePresenceUpdate(payload);
+			  } else if (event == "location_update") {
+			    this.handleLocationUpdate(payload);
+			  }		
+			}
+		});
 
 
-const handlePresenceDiff = diff => {
-  presences = Presence.syncDiff(presences, diff);
-  renderPresences(presences);
-};
+		this.channel = this.socket.channel(`user:${window.userUUID}`, {});
+		this.channel.join()
+		  .receive("ok", resp => { console.log("Joined", resp) })
+		  .receive("error", resp => { console.warn("Unable to join", resp) });
 
-const handlePresenceState = state => {
-  presences = Presence.syncState(presences, state);
-  renderPresences(presences);
-};
+		this.channel.on("presence_state", this.handlePresenceState.bind(this));
+		this.channel.on("presence_diff", this.handlePresenceDiff.bind(this));
 
-const handlePresenceUpdate = update => {
-	presences = Object.assign(presences, update);
-  renderPresences(presences);
-};
-
-// Now that you are connected, you can join channels with a topic:
-const channel = socket.channel(`user:${window.userUUID}`, {});
-
-channel.join()
-  .receive("ok", resp => { console.log("Joined", resp) })
-  .receive("error", resp => { console.warn("Unable to join", resp) });
-
-channel.on("presence_state", handlePresenceState);
-channel.on("presence_diff", handlePresenceDiff);
-
-
-const updatePresenceInterval = 60000; // 1 minute
-const updatePresence = () => {
-	channel.push("presence:update", {});
-	setTimeout(updatePresence, updatePresenceInterval);
-};
-setTimeout(updatePresence, updatePresenceInterval);
-
-
-const presenceRenderingInterval = 30000; // half minute
-const handlePresenceRendering = () => {
-	renderPresences(presences);
-	setTimeout(handlePresenceRendering, presenceRenderingInterval);
-}
-setTimeout(handlePresenceRendering, presenceRenderingInterval);
-
-
-// Handle messages that are sent to friends' topics
-socket.onMessage(({topic, event, payload}) => {
-	if (/^user_presence/.test(topic)) {
-	  if (event == "presence_diff") {
-	    handlePresenceDiff(payload);
-	  } else if (event == "presence_state") {
-	    handlePresenceState(payload);
-	  }else if (event == "presence_update") {
-	    handlePresenceUpdate(payload);
-	  }		
+		this.lastSeenElems = [...document.querySelectorAll('small.last-seen')];
+		this.registerUpdaters();
 	}
-});
+
+	setMapHandler(mapHandler) {
+		this.mapHandler = mapHandler;
+	}
+
+	pushLocationChange({ id, latitude, longitude, username }) {
+		this.channel.push("location:update", { id, latitude, longitude, username });
+	}
+
+	updatePresence() {
+		this.channel.push("presence:update", {});
+		setTimeout(this.updatePresence.bind(this), this.updatePresenceInterval);
+	}
+
+	handlePresenceRendering() {
+		this.renderPresences();
+		setTimeout(this.handlePresenceRendering.bind(this), this.presenceRenderingInterval);
+	}
+
+	registerUpdaters() {
+		setTimeout(this.updatePresence.bind(this), this.updatePresenceInterval);
+		setTimeout(this.handlePresenceRendering.bind(this), this.presenceRenderingInterval);
+	}
+
+	renderPresences() {
+	  Presence.list(this.presences, (user, {metas}) => {
+	    return {
+	      user,
+	      onlineAt: moment(new Date(metas[0].online_at)).fromNowOrNow()
+	    }
+	  })
+	  .map(({user, onlineAt}) => {
+	  	if (!this.lastSeenElems.length) return false;
+	  	const elem = this.lastSeenElems.find(el => el.dataset.lastSeenUuid === user);
+	  	if (!elem) return false;
+	  	elem.innerHTML = `Last seen: ${onlineAt}`;
+	  	return true;
+	  }); 
+	}
+
+	handlePresenceDiff(diff) {
+	  this.presences = Presence.syncDiff(this.presences, diff);
+	  this.renderPresences();
+	};
+
+	handlePresenceState(state) {
+	  this.presences = Presence.syncState(this.presences, state);
+	  this.renderPresences();
+	};
+
+	handlePresenceUpdate(update) {
+		this.presences = Object.assign(this.presences, update);
+	  this.renderPresences();
+	};
+
+	handleLocationUpdate({ id, latitude, longitude, username }) {
+		this.mapHandler.setLocationFor({ id, latitude, longitude, username });
+	};
+}
 
 
-export default socket;
+export default SocketHandler;

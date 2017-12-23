@@ -39,6 +39,12 @@ defmodule MacLirWeb.UserChannel do
     {:noreply, socket}
   end
 
+  # Send location updates to subscribers
+  def handle_in("location:update", payload, socket = %{assigns: %{user_uuid: user_uuid}}) do
+    MacLirWeb.Endpoint.broadcast_from! self(), presence_topic(user_uuid), "location_update", payload
+    {:noreply, socket}
+  end
+
   # Track the current process as a presence for the given user on it's designated presence topic
   defp track_user_presence(user_uuid) do
     {:ok, _} = MyPresence.track(self(), presence_topic(user_uuid), user_uuid, %{
