@@ -15,9 +15,9 @@
         <a class="media-left waves-light">
             <img class="rounded-circle avatar-img" src="<%= friend.image %>" alt="Generic image">
         </a>
-        <div class="media-body">
+        <div class="media-body" data-user-uuid="<%= friend.user_uuid %>">
             <p><%= friend.username %></p>
-            <small>Last seen: 30s ago</small>
+            <small class="last-seen" data-last-seen-uuid="<%= friend.user_uuid %>">Last seen: a while ago</small>
         </div>
         <%= form_for @conn, page_path(@conn, :post_remove_friend), [as: :remove, class: "d-inline"], fn _f -> %>
         <input type="hidden" name="remove[uuid]" value="<%= friend.uuid %>">

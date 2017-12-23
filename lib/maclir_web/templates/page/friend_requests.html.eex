@@ -3,7 +3,7 @@
 	<%= if @conn |> received_friend_requests |> Enum.count > 0 do %>
 	<div class="list-group">
 		<%= for n <- received_friend_requests(@conn) do %>
-	  <a href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
+	  <a data-user-uuid="<%= n.user.uuid %>" href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
 	    <div class="d-flex w-100 justify-content-between">
 	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>)</h5>
 	    </div>
@@ -17,7 +17,6 @@
 	    	<button type="submit" class="btn btn-flat btn-sm blue">Decline</button>
 	    	<% end %>
 	    </p>
-	    <small>3 days ago</small>
 	  </a>
 		<% end %>
 	</div>
@@ -27,7 +26,7 @@
 	<%= if @conn |> sent_friend_requests |> Enum.count > 0 do %>
 	<div class="list-group">
 		<%= for n <- sent_friend_requests(@conn) do %>
-	  <a href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
+	  <a data-user-uuid="<%= n.user.uuid %>" href="javascript:;" class="list-group-item list-group-item-action flex-column align-items-start">
 	    <div class="d-flex w-100 justify-content-between">
 	      <h5 class="mb-1"><%= n.user.username %> (<%= n.user.phone %>)</h5>
 	    </div>

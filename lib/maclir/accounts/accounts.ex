@@ -87,6 +87,8 @@ defmodule MacLir.Accounts do
   @doc """
   Add a friend
   """
+  def add_friend(%Friend{uuid: uuid}, %Friend{uuid: uuid}), do: friend_by_uuid(uuid)
+
   def add_friend(%Friend{uuid: from_uuid}, %Friend{uuid: to_uuid}) do
     with :ok <- Router.dispatch(AddFriend.new(friend_uuid: to_uuid, from_uuid: from_uuid), consistency: :strong) do
       friend_by_uuid(from_uuid)
@@ -98,6 +100,8 @@ defmodule MacLir.Accounts do
   @doc """
   Cancel a sent friend request
   """
+  def cancel_friend(%Friend{uuid: uuid}, %Friend{uuid: uuid}), do: friend_by_uuid(uuid)
+
   def cancel_friend_request(%Friend{uuid: from_uuid}, %Friend{uuid: to_uuid}) do
     with :ok <- Router.dispatch(CancelFriend.new(friend_uuid: to_uuid, from_uuid: from_uuid), consistency: :strong) do
       friend_by_uuid(from_uuid)
@@ -109,6 +113,8 @@ defmodule MacLir.Accounts do
   @doc """
   Accept a friend request
   """
+  def accept_friend_request(%Friend{uuid: uuid}, %Friend{uuid: uuid}), do: friend_by_uuid(uuid)
+
   def accept_friend_request(%Friend{uuid: uuid}, %Friend{uuid: from_uuid}) do
     with :ok <- Router.dispatch(AcceptFriend.new(friend_uuid: uuid, to_uuid: from_uuid), consistency: :strong) do
       friend_by_uuid(uuid)
@@ -120,6 +126,8 @@ defmodule MacLir.Accounts do
   @doc """
   Reject a friend request
   """
+  def reject_friend_request(%Friend{uuid: uuid}, %Friend{uuid: uuid}), do: friend_by_uuid(uuid)
+
   def reject_friend_request(%Friend{uuid: from_uuid}, %Friend{uuid: to_uuid}) do
     with :ok <- Router.dispatch(RejectFriend.new(friend_uuid: from_uuid, to_uuid: to_uuid), consistency: :strong) do
       friend_by_uuid(from_uuid)
@@ -131,6 +139,8 @@ defmodule MacLir.Accounts do
   @doc """
   Remove a friend
   """
+  def remove_friend_request(%Friend{uuid: uuid}, %Friend{uuid: uuid}), do: friend_by_uuid(uuid)
+
   def remove_friend(%Friend{uuid: from_uuid}, %Friend{uuid: to_uuid}) do
     with :ok <- Router.dispatch(RemoveFriend.new(friend_uuid: from_uuid, to_uuid: to_uuid), consistency: :strong) do
       friend_by_uuid(from_uuid)

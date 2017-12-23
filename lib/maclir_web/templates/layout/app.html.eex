@@ -31,6 +31,10 @@
       </div>
     </main>
     <footer></footer>
+    <script>
+      window.userUUID = "<%= assigns[:socket_uuid] %>";
+      window.userToken = "<%= assigns[:socket_token] %>";
+    </script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

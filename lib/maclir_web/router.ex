@@ -9,6 +9,7 @@ defmodule MacLirWeb.Router do
     plug :put_secure_browser_headers
     plug Guardian.Plug.VerifySession
     plug Guardian.Plug.LoadResource
+    plug MacLirWeb.Plug.SocketToken
   end
 
   pipeline :api do

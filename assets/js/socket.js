@@ -3,60 +3,105 @@
 
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/web/endpoint.ex":
-import {Socket} from "phoenix"
+import {Socket, Presence} from "phoenix";
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
 
-// When you connect, you'll often need to authenticate the client.
-// For example, imagine you have an authentication plug, `MyAuth`,
-// which authenticates the session and assigns a `:current_user`.
-// If the current user exists you can assign the user's token in
-// the connection for use in the layout.
-//
-// In your "lib/web/router.ex":
-//
-//     pipeline :browser do
-//       ...
-//       plug MyAuth
-//       plug :put_user_token
-//     end
-//
-//     defp put_user_token(conn, _) do
-//       if current_user = conn.assigns[:current_user] do
-//         token = Phoenix.Token.sign(conn, "user socket", current_user.id)
-//         assign(conn, :user_token, token)
-//       else
-//         conn
-//       end
-//     end
-//
-// Now you need to pass this token to JavaScript. You can do so
-// inside a script tag in "lib/web/templates/layout/app.html.eex":
-//
-//     <script>window.userToken = "<%= assigns[:user_token] %>";</script>
-//
-// You will need to verify the user token in the "connect/2" function
-// in "lib/web/channels/user_socket.ex":
-//
-//     def connect(%{"token" => token}, socket) do
-//       # max_age: 1209600 is equivalent to two weeks in seconds
-//       case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
-//         {:ok, user_id} ->
-//           {:ok, assign(socket, :user, user_id)}
-//         {:error, reason} ->
-//           :error
-//       end
-//     end
-//
-// Finally, pass the token on connect as below. Or remove it
-// from connect if you don't care about authentication.
 
-socket.connect()
+let presences = {};
+
+const socket = new Socket("/socket", {
+	params: {token: window.userToken},
+  logger: (kind, msg, data) => {
+    console.log(`${kind} >> ${msg}`, data);
+  }
+});
+
+socket.connect();
+socket.onError(ev => console.error('socket error', ev));
+socket.onClose(ev => console.warn('socket closed', ev));
+
+
+// When server & client clocks are out of sync, we might sometimes get
+// 'in a few seconds', which is a weird message for a past event
+moment.fn.fromNowOrNow = function (a) {
+  if (Math.abs(moment().diff(this)) < 5000) { // 5000 milliseconds
+      return 'a few seconds ago';
+  }
+  return this.fromNow(a);
+}
+
+const renderPresences = (presences) => {
+  const lastSeenElems = [...document.querySelectorAll('small.last-seen')];
+  Presence.list(presences, (user, {metas}) => {
+    return {
+      user,
+      onlineAt: moment(new Date(metas[0].online_at)).fromNowOrNow()
+    }
+  })
+  .map(({user, onlineAt}) => {
+  	if (!lastSeenElems.length) return false;
+  	const elem = lastSeenElems.find(el => el.dataset.lastSeenUuid === user);
+  	if (!elem) return false;
+  	elem.innerHTML = `Last seen: ${onlineAt}`;
+  	return true;
+  }); 
+};
+
+
+const handlePresenceDiff = diff => {
+  presences = Presence.syncDiff(presences, diff);
+  renderPresences(presences);
+};
+
+const handlePresenceState = state => {
+  presences = Presence.syncState(presences, state);
+  renderPresences(presences);
+};
+
+const handlePresenceUpdate = update => {
+	presences = Object.assign(presences, update);
+  renderPresences(presences);
+};
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("topic:subtopic", {})
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+const channel = socket.channel(`user:${window.userUUID}`, {});
 
-export default socket
+channel.join()
+  .receive("ok", resp => { console.log("Joined", resp) })
+  .receive("error", resp => { console.warn("Unable to join", resp) });
+
+channel.on("presence_state", handlePresenceState);
+channel.on("presence_diff", handlePresenceDiff);
+
+
+const updatePresenceInterval = 60000; // 1 minute
+const updatePresence = () => {
+	channel.push("presence:update", {});
+	setTimeout(updatePresence, updatePresenceInterval);
+};
+setTimeout(updatePresence, updatePresenceInterval);
+
+
+const presenceRenderingInterval = 30000; // half minute
+const handlePresenceRendering = () => {
+	renderPresences(presences);
+	setTimeout(handlePresenceRendering, presenceRenderingInterval);
+}
+setTimeout(handlePresenceRendering, presenceRenderingInterval);
+
+
+// Handle messages that are sent to friends' topics
+socket.onMessage(({topic, event, payload}) => {
+	if (/^user_presence/.test(topic)) {
+	  if (event == "presence_diff") {
+	    handlePresenceDiff(payload);
+	  } else if (event == "presence_state") {
+	    handlePresenceState(payload);
+	  }else if (event == "presence_update") {
+	    handlePresenceUpdate(payload);
+	  }		
+	}
+});
+
+
+export default socket;

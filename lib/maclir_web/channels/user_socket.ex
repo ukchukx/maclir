@@ -2,7 +2,9 @@ defmodule MacLirWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", MacLirWeb.RoomChannel
+  channel "user:*", MacLirWeb.UserChannel
+  # "user_presence:*" is not meant to be joined, added here to clarify that the topic prefix is used by the UserChannel
+  channel "user_presence:*", MacLirWeb.UserChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -19,9 +21,17 @@ defmodule MacLirWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket) do
+    # max_age: 1209600 is equivalent to two weeks in seconds
+    case Phoenix.Token.verify(socket, "socket_token", token, max_age: 1209600) do
+     {:ok, uuid} ->
+       {:ok, assign(socket, :user_uuid, uuid)}
+     {:error, reason} ->
+       :error
+    end
   end
+
+  def connect(_params, _socket), do: :error
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #

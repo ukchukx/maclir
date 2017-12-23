@@ -30,7 +30,7 @@ defmodule MacLirWeb.PageController do
       conn
       |> Guardian.Plug.sign_in(user, :access)
       |> put_flash(:info, "Profile updated")
-      |> render("profile.html")
+      |> redirect(to: page_path(conn, :profile))
     else
       {:error, :validation_failure, errors} ->
         IO.inspect errors, label: "page"
@@ -48,7 +48,7 @@ defmodule MacLirWeb.PageController do
       nil -> 
         conn
         |> put_flash(:error, "No such user")
-        |> render("friends.html", user: user)
+        |> redirect(to: page_path(conn, :friends))
 
       %User{uuid: uuid} ->
         to_friend = Accounts.friend_by_user(uuid)
@@ -56,13 +56,13 @@ defmodule MacLirWeb.PageController do
         with %Friend{} <- Accounts.add_friend(from_friend, to_friend) do
           conn
           |> put_flash(:info, "Request sent")
-          |> render("friends.html", user: user)
+          |> redirect(to: page_path(conn, :friends))
         else
           reply ->
             IO.inspect reply, label: "post_friend_request"
             conn
             |> put_flash(:error, "Could not send request")
-            |> render("friends.html", user: user)
+            |> redirect(to: page_path(conn, :friends))
         end
     end
   end

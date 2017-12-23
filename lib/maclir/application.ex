@@ -12,6 +12,8 @@ defmodule MacLir.Application do
       supervisor(MacLir.Repo, []),
       # Start the endpoint when the application starts
       supervisor(MacLirWeb.Endpoint, []),
+      # Start presence
+      supervisor(MacLirWeb.MyPresence, []),
       # Accounts supervisor
       supervisor(MacLir.Accounts.Supervisor, []),
       # Enforce unique constraints
