@@ -19,7 +19,7 @@
             <p><%= friend.username %></p>
             <small class="last-seen" data-last-seen-uuid="<%= friend.user_uuid %>">Last seen: a while ago</small>
         </div>
-        <%= form_for @conn, page_path(@conn, :post_remove_friend), [as: :remove, class: "d-inline"], fn _f -> %>
+        <%= form_for @conn, page_path(@conn, :post_remove_friend), [as: :remove, class: "d-inline", data: [confirm: "Are you sure?"]], fn _f -> %>
         <input type="hidden" name="remove[uuid]" value="<%= friend.uuid %>">
         <button type="submit" class="btn btn-flat btn-sm blue">Remove</button>
         <% end %>

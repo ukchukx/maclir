@@ -6,11 +6,18 @@ export default class MainView {
   	this.setupMap();
   	this.bootDropdown();
 
+    this.deleteForms =  [...document.querySelectorAll('form[data-confirm]')];
+
+    this.deleteForms
+      .map(form => form.addEventListener('submit', this.handleSubmit.bind(this), false));
+
     console.log('MainView mounted');
   }
 
   unmount() {
     navigator.geolocation.clearWatch(this.watchID);
+    this.deleteForms
+      .map(form => this.removeEventListener('submit', this.handleSubmit.bind(this), false));
     console.log('MainView unmounted');
   }
 
@@ -18,6 +25,15 @@ export default class MainView {
   	// The first click on a dropdown does nothing, so 
   	// let's get the first click out of the way
   	document.querySelector('.navbar .nav-item.dropdown > a').click();
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const confirmed = confirm(e.target.dataset.confirm);
+    e.returnValue = confirmed;
+    return confirmed;
   }
 
   showFlash() {

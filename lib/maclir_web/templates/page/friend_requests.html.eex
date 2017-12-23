@@ -12,7 +12,7 @@
 	    	<input type="hidden" name="accept[uuid]" value="<%= n.friend.uuid %>">
 	    	<button type="submit" class="btn btn-flat btn-sm blue">Share</button>
 	    	<% end %>
-	    	<%= form_for @conn, page_path(@conn, :post_reject_friend_request), [as: :reject, class: "d-inline"], fn _f -> %>
+	    	<%= form_for @conn, page_path(@conn, :post_reject_friend_request), [as: :reject, class: "d-inline", data: [confirm: "Are you sure?"]], fn _f -> %>
 	    	<input type="hidden" name="reject[uuid]" value="<%= n.friend.uuid %>">
 	    	<button type="submit" class="btn btn-flat btn-sm blue">Decline</button>
 	    	<% end %>
