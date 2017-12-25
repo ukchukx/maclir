@@ -20,7 +20,7 @@ defmodule MacLir.FriendsTest do
 
 		@tag :integration
 		test "should do nothing if both parties are friends", %{bob: b, alice: a} do
-			make_friends(b, a)
+			b = make_friends(b, a)
 
 			Accounts.add_friend(a, b)
 			%Friend{received_requests: reqs} = reload(b)

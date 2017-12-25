@@ -27,6 +27,7 @@ defmodule MacLir.Accounts.Aggregates.Friend do
     FriendUpdated,
   }
   alias MacLir.Accounts
+  alias Commanded.Aggregate.Multi
 
   @doc """
   Creates a friend
@@ -82,7 +83,11 @@ defmodule MacLir.Accounts.Aggregates.Friend do
       true -> nil
       false -> 
         case Enum.member?(reqs, to_uuid) or is_friend?(to_uuid, uuid) do
-          true -> %FriendAdded{friend_uuid: uuid, to_uuid: to_uuid}
+          true -> 
+            friend
+            |> Multi.new
+            |> Multi.execute(&friend_added(&1, uuid, to_uuid))
+            |> Multi.execute(&friend_added(&1, to_uuid, uuid))
           false -> nil
         end        
     end
@@ -107,7 +112,11 @@ defmodule MacLir.Accounts.Aggregates.Friend do
   """
   def execute(%__MODULE__{uuid: friend_uuid} = friend, %RemoveFriend{to_uuid: to_uuid}) do
     case is_friend?(to_uuid, friend) do
-      true -> %FriendRemoved{friend_uuid: friend_uuid, to_uuid: to_uuid}
+      true -> 
+        friend
+        |> Multi.new
+        |> Multi.execute(&friend_removed(&1, friend_uuid, to_uuid))
+        |> Multi.execute(&friend_removed(&1, to_uuid, friend_uuid))
       false -> nil
     end
   end
@@ -149,6 +158,11 @@ defmodule MacLir.Accounts.Aggregates.Friend do
   end
 
   # private helpers
+
+  defp friend_added(_, friend, to), do: %FriendAdded{friend_uuid: friend, to_uuid: to}
+
+  defp friend_removed(_, friend, to), do: %FriendRemoved{friend_uuid: friend, to_uuid: to}
+
   defp is_friend?(friend_uuid, %__MODULE__{friends: friends}) do
     Enum.member?(friends, friend_uuid)
   end
