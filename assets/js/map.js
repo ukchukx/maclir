@@ -76,10 +76,12 @@ class MapHandler {
 
   updateUserLocation({ coords }) {
     const {latitude, longitude} = coords;
-    this.coords = [latitude, longitude];
-    const payload = { id: this.userId, latitude, longitude, username: this.userName };
-    this.setLocationFor(payload);
-    this.socketHandler.pushLocationChange(payload);
+    if (latitude && longitude) {
+      this.coords = [latitude, longitude];
+      const payload = { id: this.userId, latitude, longitude, username: this.userName };
+      this.setLocationFor(payload);
+      this.socketHandler.pushLocationChange(payload);
+    }
   }
 }
 
