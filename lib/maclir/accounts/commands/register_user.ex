@@ -69,6 +69,21 @@ defmodule MacLir.Accounts.Commands.RegisterUser do
   end
 
   @doc """
+  Assign a dummy email address if none was provided
+  """
+  def assign_dummy_email(%__MODULE__{email: nil, username: username} = register_user) do
+    assign_email(register_user, "#{username}@maclir.co")
+  end
+  def assign_dummy_email(%__MODULE__{email: "", username: username} = register_user) do 
+    assign_email(register_user, "#{username}@maclir.co")
+  end
+  def assign_dummy_email(%__MODULE__{email: email} = register_user) do 
+    assign_email(register_user, email)
+  end
+
+  defp assign_email(register_user, email), do: %__MODULE__{register_user | email: email}
+
+  @doc """
   Hash the password, clear the original password
   """
   def hash_password(%__MODULE__{password: password} = register_user) do
