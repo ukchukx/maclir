@@ -37,9 +37,17 @@ class SocketHandler {
 			    this.handlePresenceState(payload);
 			  } else if (event == "presence_update") {
 			    this.handlePresenceUpdate(payload);
-			  } else if (event == "location_update") {
-			    this.handleLocationUpdate(payload);
-			  }		
+			  } else if (event == "friend_added") {
+			    this.handleFriendAdded(payload);
+			  }	else if (event == "friend_removed") {
+			    this.handleFriendRemoved(payload);
+			  }	else if (event == "friend_request_received") {
+			    this.handleFriendRequestReceived(payload);
+			  }	else if (event == "friend_request_rejected") {
+			    this.handleFriendRequestRejected(payload);
+			  }	else if (event == "friend_request_cancelled") {
+			    this.handleFriendRequestCancelled(payload);
+			  }	
 			}
 		});
 
@@ -51,6 +59,11 @@ class SocketHandler {
 
 		this.channel.on("presence_state", this.handlePresenceState.bind(this));
 		this.channel.on("presence_diff", this.handlePresenceDiff.bind(this));
+		this.channel.on("friend_added", this.handleFriendAdded.bind(this));
+		this.channel.on("friend_removed", this.handleFriendRemoved.bind(this));
+		this.channel.on("friend_request_received", this.handleFriendRequestReceived.bind(this));
+		this.channel.on("friend_request_rejected", this.handleFriendRequestRejected.bind(this));
+		this.channel.on("friend_request_cancelled", this.handleFriendRequestCancelled.bind(this));
 
 		this.lastSeenElems = [...document.querySelectorAll('small.last-seen')];
 		this.registerUpdaters();
@@ -113,6 +126,26 @@ class SocketHandler {
 	handleLocationUpdate({ id, latitude, longitude, username }) {
 		this.mapHandler.setLocationFor({ id, latitude, longitude, username });
 	};
+
+	handleFriendAdded(payload) {
+		console.log(payload);
+	}
+
+	handleFriendRemoved(payload) {
+		console.log(payload);
+	}
+
+	handleFriendRequestReceived(payload) {
+		console.log(payload);
+	}
+
+	handleFriendRequestRejected(payload) {
+		console.log(payload);
+	}
+
+	handleFriendRequestCancelled(payload) {
+		console.log(payload);
+	}
 }
 
 

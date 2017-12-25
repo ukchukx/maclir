@@ -82,8 +82,8 @@ defmodule MacLir.Accounts.Aggregates.Friend do
     case is_friend?(to_uuid, friend) do
       true -> nil
       false -> 
-        case Enum.member?(reqs, to_uuid) or is_friend?(to_uuid, uuid) do
-          true -> 
+        case Enum.member?(reqs, to_uuid) do
+          true ->
             friend
             |> Multi.new
             |> Multi.execute(&friend_added(&1, uuid, to_uuid))
@@ -163,11 +163,12 @@ defmodule MacLir.Accounts.Aggregates.Friend do
 
   defp friend_removed(_, friend, to), do: %FriendRemoved{friend_uuid: friend, to_uuid: to}
 
-  defp is_friend?(friend_uuid, %__MODULE__{friends: friends}) do
-    Enum.member?(friends, friend_uuid)
-  end
+  defp is_friend?(friend_uuid, %__MODULE__{friends: friends}), do: Enum.member?(friends, friend_uuid)
+
   defp is_friend?(friend_uuid, uuid) do
-    %{friends: friends} = Accounts.friend_by_uuid(friend_uuid)
-    Enum.member?(friends, uuid)
+    friend_uuid
+    |> Accounts.friend_by_uuid
+    |> Map.get(:friends)
+    |> Enum.member?(uuid)
   end
 end
