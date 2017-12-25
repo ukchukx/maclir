@@ -15,7 +15,7 @@ exports.config = {
       order: {
         before: [
           "vendor/js/jquery-3.2.1.min.js",
-          "vendor/js/popper.min.js",
+          "vendor/js/popper.js",
           "vendor/js/bootstrap.min.js",
           "vendor/js/mdb.min.js",
           "vendor/js/leaflet.js",
