@@ -14,18 +14,19 @@ defmodule MacLir.Storage do
   end
 
   defp reset_eventstore do
-    {:ok, conn} =
-      EventStore.configuration()
-      |> EventStore.Config.parse()
-      |> Postgrex.start_link()
-
-    EventStore.Storage.Initializer.reset!(conn)
+    EventStore.configuration
+    |> EventStore.Config.parse
+    |> Postgrex.start_link
+    |> elem(1)
+    |> EventStore.Storage.Initializer.reset!
   end
 
   defp reset_readstore do
-    readstore_config = Application.get_env(:maclir, MacLir.Repo)
-    {:ok, conn} = Postgrex.start_link(readstore_config)
-    Postgrex.query!(conn, truncate_readstore_tables(), [])
+    :maclir
+    |> Application.get_env(MacLir.Repo)
+    |> Postgrex.start_link
+    |> elem(1)
+    |> Postgrex.query!(truncate_readstore_tables(), [])
   end
 
   defp truncate_readstore_tables do
