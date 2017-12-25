@@ -1,0 +1,9 @@
+version: '2'
+services:
+  maclir:
+    image: maclir
+    container_name: maclir
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - "${PWD}/logs:/app/logs"

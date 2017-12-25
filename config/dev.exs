@@ -1,5 +1,8 @@
 use Mix.Config
 
+
+config :maclir, env: :dev
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

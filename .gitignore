@@ -7,6 +7,7 @@ npm-debug.log
 /assets/node_modules
 /priv/static/
 /config/*.secret.exs
+/logs
 *.swo
 *.swp
 .env

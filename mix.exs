@@ -4,7 +4,7 @@ defmodule MacLir.Mixfile do
   def project do
     [
       app: :maclir,
-      version: "0.0.1",
+      version: "1.0.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -40,9 +40,11 @@ defmodule MacLir.Mixfile do
       {:commanded_eventstore_adapter, "~> 0.3"},
       {:commanded_ecto_projections, "~> 0.6"},
       {:cors_plug, "~> 1.4"},
+      {:distillery, "~> 1.5", runtime: false},
       {:exconstructor, "~> 1.1"},
       {:guardian, "~> 0.14"},
       {:ex_machina, "~> 2.0", only: :test},
+      {:logger_file_backend, "~> 0.0.10"},
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
       {:uuid, "~> 1.1"},
       {:vex, "~> 0.6"},

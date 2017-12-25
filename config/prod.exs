@@ -1,12 +1,41 @@
 use Mix.Config
 
+config :maclir, env: :prod
 
 config :maclir, MacLirWeb.Endpoint,
-  load_from_system_env: true,
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  load_from_system_env: false,
+  http: [port: System.get_env("MACLIR_PORT"), compress: true],
+  url: [host: "localhost", port: System.get_env("MACLIR_PORT")],
+  server: true,
+  root: ".",
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  version: Application.spec(:maclir, :vsn)
 
 config :logger, level: :info
+
+
+config :logger,
+  backends: [{LoggerFileBackend, :info},
+             {LoggerFileBackend, :warn},
+             {LoggerFileBackend, :error}]
+
+config :logger, :warn,
+  path: "logs/warn.log",
+  format: "[$date] [$time] [$level] $metadata $levelpad$message\n",
+  metadata: [:date, :module, :line],
+  level: :warn
+
+config :logger, :error,
+  path: "logs/error.log",
+  format: "[$date] [$time] [$level] $metadata $levelpad$message\n",
+  metadata: [:date, :module, :line],
+  level: :error
+
+config :logger, :info,
+  path: "logs/info.log",
+  format: "[$date] [$time] [$level] $metadata $levelpad$message\n",
+  metadata: [:date, :application, :module, :function, :line],
+  level: :warn
 
 
 config :maclir, MacLirWeb.Endpoint,
