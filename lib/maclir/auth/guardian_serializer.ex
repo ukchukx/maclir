@@ -11,6 +11,11 @@ defmodule MacLir.Auth.GuardianSerializer do
   def for_token(%User{} = user), do: {:ok, "User:#{user.uuid}"}
   def for_token(_), do: {:error, "Unknown resource type"}
 
-  def from_token("User:" <> uuid), do: {:ok, Accounts.user_by_uuid(uuid)}
+  def from_token("User:" <> uuid) do
+    case Accounts.user_by_uuid(uuid) do
+      %User{} = user -> {:ok, user}  
+      _ -> {:error, "Not Found"}
+    end
+ end
   def from_token(_), do: {:error, "Unknown resource type"}
 end

@@ -7,9 +7,6 @@ defmodule MacLirWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Guardian.Plug.VerifySession
-    plug Guardian.Plug.LoadResource
-    plug MacLirWeb.Plug.SocketToken
   end
 
   pipeline :api do
@@ -17,15 +14,19 @@ defmodule MacLirWeb.Router do
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource
   end
+  pipeline :socket_auth do
+    plug MacLirWeb.Plug.SocketToken
+  end
 
   pipeline :browser_auth do
     plug Guardian.Plug.VerifySession
-    plug Guardian.Plug.EnsureAuthenticated, handler: MacLirWeb.SessionController
     plug Guardian.Plug.LoadResource
+    plug Guardian.Plug.EnsureAuthenticated, handler: MacLirWeb.SessionController
+    plug MacLirWeb.Plug.EnsureAuthenticated # because Guardian isn't doing it's job
   end
 
   scope "/", MacLirWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through [:browser, :socket_auth]
 
 
     get "/login", SessionController, :login
@@ -38,7 +39,7 @@ defmodule MacLirWeb.Router do
   end
 
   scope "/", MacLirWeb do
-    pipe_through [:browser, :browser_auth]
+    pipe_through [:browser, :browser_auth, :socket_auth]
     
     get "/", PageController, :home
     get "/friends", PageController, :friends
