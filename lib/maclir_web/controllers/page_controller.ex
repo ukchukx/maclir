@@ -8,23 +8,21 @@ defmodule MacLirWeb.PageController do
     render conn, "home.html"
   end
 
-  def friends(conn, _params) do
-    user = Guardian.Plug.current_resource(conn)
-    render conn, "friends.html", user: user
+  def friends(conn = %{assigns: assigns}, _params) do
+    render conn, "friends.html", user: assigns[:current_user]
   end
 
-  def friend_requests(conn, _params) do
-    user = Guardian.Plug.current_resource(conn)
-    render conn, "friend_requests.html", user: user
+  def friend_requests(conn = %{assigns: assigns}, _params) do
+    render conn, "friend_requests.html", user: assigns[:current_user]
   end
 
   def profile(conn, _params) do
     render conn, "profile.html"
   end
 
-  def post_profile(conn, %{"profile" => params}) do
+  def post_profile(conn = %{assigns: assigns}, %{"profile" => params}) do
     params = Map.drop(params, ["role"])
-    user = Guardian.Plug.current_resource(conn)
+    user = assigns[:current_user]
 
     with {:ok, %User{} = user} <- Accounts.update_user(user, params) do
       conn
@@ -40,8 +38,8 @@ defmodule MacLirWeb.PageController do
     end
   end
 
-  def post_friend_request(conn, %{"friend" => %{"phone" => phone}}) do
-    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+  def post_friend_request(conn = %{assigns: assigns}, %{"friend" => %{"phone" => phone}}) do
+    %User{uuid: user_uuid} = assigns[:current_user]
     from_friend = Accounts.friend_by_user(user_uuid)
 
     case Accounts.user_by_phone(phone) do
@@ -67,8 +65,8 @@ defmodule MacLirWeb.PageController do
     end
   end
 
-  def post_cancel_friend_request(conn, %{"cancel" => %{"uuid" => uuid}}) do
-    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+  def post_cancel_friend_request(conn = %{assigns: assigns}, %{"cancel" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = assigns[:current_user]
     from_friend = Accounts.friend_by_user(user_uuid)
     to_friend = Accounts.friend_by_uuid(uuid)
 
@@ -85,8 +83,8 @@ defmodule MacLirWeb.PageController do
     end
   end
 
-  def post_accept_friend_request(conn, %{"accept" => %{"uuid" => uuid}}) do
-    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+  def post_accept_friend_request(conn = %{assigns: assigns}, %{"accept" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = assigns[:current_user]
     from_friend = Accounts.friend_by_user(user_uuid)
     to_friend = Accounts.friend_by_uuid(uuid)
 
@@ -99,8 +97,8 @@ defmodule MacLirWeb.PageController do
     end
   end
 
-  def post_reject_friend_request(conn, %{"reject" => %{"uuid" => uuid}}) do
-    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+  def post_reject_friend_request(conn = %{assigns: assigns}, %{"reject" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = assigns[:current_user]
     from_friend = Accounts.friend_by_user(user_uuid)
     to_friend = Accounts.friend_by_uuid(uuid)
 
@@ -113,8 +111,8 @@ defmodule MacLirWeb.PageController do
     end
   end
 
-  def post_remove_friend(conn, %{"remove" => %{"uuid" => uuid}}) do
-    %User{uuid: user_uuid} = Guardian.Plug.current_resource(conn)
+  def post_remove_friend(conn = %{assigns: assigns}, %{"remove" => %{"uuid" => uuid}}) do
+    %User{uuid: user_uuid} = assigns[:current_user]
     from_friend = Accounts.friend_by_user(user_uuid)
     to_friend = Accounts.friend_by_uuid(uuid)
 

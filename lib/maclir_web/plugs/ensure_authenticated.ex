@@ -13,7 +13,8 @@ defmodule MacLirWeb.Plug.EnsureAuthenticated do
   	  	conn
   	  	|> configure_session(drop: true)
   	  	|> Phoenix.Controller.redirect(to: login_path)
-  	  %User{} -> conn    
+  	  %User{} = user -> 
+        assign(conn, :current_user, user)
   	end
 	end
 end

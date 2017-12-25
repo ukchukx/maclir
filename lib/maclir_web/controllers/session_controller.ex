@@ -17,8 +17,8 @@ defmodule MacLirWeb.SessionController do
     end
   end
 
-  def login(conn, _) do
-    case Guardian.Plug.current_resource(conn) do
+  def login(conn = %{assigns: assigns}, _) do
+    case assigns[:current_user] do
       %User{} ->
         conn
         |> redirect(to: page_path(conn, :home))
