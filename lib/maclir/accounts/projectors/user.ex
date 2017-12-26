@@ -57,7 +57,5 @@ defmodule MacLir.Accounts.Projectors.User do
     Ecto.Multi.update_all(multi, :user, user_query(user_uuid), set: changes)
   end
 
-  defp user_query(user_uuid) do
-    from(u in User, where: u.uuid == ^user_uuid)
-  end
+  defp user_query(user_uuid), do: from(u in User, where: u.uuid == ^user_uuid)
 end

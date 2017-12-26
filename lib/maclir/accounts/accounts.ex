@@ -15,7 +15,6 @@ defmodule MacLir.Accounts do
   }
 
   alias MacLir.Accounts.Queries.{
-    FriendByUser,
     SentFriendRequests,
     UserByPhone,
     UserByUsername,
@@ -69,9 +68,7 @@ defmodule MacLir.Accounts do
   @doc """
   Create a friend.
   """
-  def create_friend(attrs) do
-    uuid = UUID.uuid4()
-
+  def create_friend(%{user_uuid: uuid} = attrs) do
     create_friend =
       attrs
       |> CreateFriend.new
@@ -194,37 +191,29 @@ defmodule MacLir.Accounts do
   Get friends user has sent friend requests to
   """
   def user_sent_requests(user_uuid) do
-    %Friend{sent_requests: sent_requests} = 
-      user_uuid
-      |> FriendByUser.new
-      |> Repo.one
-      |> load_sent_requests
-
-    Enum.map(sent_requests, &friend_by_uuid/1)
+    user_uuid
+    |> friend_by_uuid
+    |> load_sent_requests
+    |> Map.get(:sent_requests)
+    |> Enum.map(&friend_by_uuid/1)
   end
 
   @doc """
   Get friends user has sent friend requests to
   """
   def user_received_requests(user_uuid) do
-    %Friend{received_requests: received_requests} = 
-      user_uuid
-      |> FriendByUser.new
-      |> Repo.one
-
-    Enum.map(received_requests, &friend_by_uuid/1)
+    user_uuid
+    |> friend_by_uuid
+    |> Enum.map(&friend_by_uuid/1)
   end
 
   @doc """
   Get user's friends
   """
   def user_friends(user_uuid) do
-    %Friend{friends: friends} = 
-      user_uuid
-      |> FriendByUser.new
-      |> Repo.one
-
-    Enum.map(friends, &friend_by_uuid/1)
+    user_uuid
+    |> friend_by_uuid
+    |> Enum.map(&friend_by_uuid/1)
   end
 
   @doc """
@@ -237,11 +226,7 @@ defmodule MacLir.Accounts do
   @doc """
   Get an existing friend by their user UUID, or return `nil` if not found
   """
-  def friend_by_user(user_uuid) do
-    user_uuid
-    |> FriendByUser.new
-    |> Repo.one
-  end
+  def friend_by_user(user_uuid), do: friend_by_uuid(user_uuid)
 
   @doc """
   Load sent requests into virtual field

@@ -19,7 +19,10 @@ defmodule MacLir.Router do
   middleware Validate
   middleware Uniqueness
 
-  dispatch [RegisterUser, UpdateUser], to: User, identity: :user_uuid
+  identify User, by: :user_uuid, prefix: "user-"
+  identify Friend, by: :friend_uuid, prefix: "friend-"
+
+  dispatch [RegisterUser, UpdateUser], to: User
   dispatch [
   	AcceptFriend,
     AddFriend,
@@ -28,5 +31,5 @@ defmodule MacLir.Router do
     RejectFriend,
     RemoveFriend,
     UpdateFriend
-  ], to: Friend, identity: :friend_uuid
+  ], to: Friend
 end

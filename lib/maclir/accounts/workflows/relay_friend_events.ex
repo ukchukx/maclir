@@ -11,8 +11,6 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
     FriendRequestReceived
   }
 
-  alias MacLir.Accounts
-
   alias __MODULE__.Cache
 
   def init do
@@ -35,12 +33,8 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
         |> case do
           false -> :ok
           true ->
-            %{user_uuid: friend_uuid} = Accounts.friend_by_uuid(friend)
-            %{user_uuid: to_uuid} = Accounts.friend_by_uuid(to)
-            topic = user_topic(friend_uuid)
-            payload = %{
-              from: %{uuid: friend, user_uuid: friend_uuid}, 
-              to: %{uuid: to, user_uuid: to_uuid}}
+            topic = user_topic(friend)
+            payload = %{from: friend, to: to}
             broadcast(topic, "friend_added", payload)
 
             :ok
@@ -62,12 +56,8 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
         |> case do
           false -> :ok
           true ->
-            %{user_uuid: friend_uuid} = Accounts.friend_by_uuid(friend)
-            %{user_uuid: to_uuid} = Accounts.friend_by_uuid(to)
-            topic = user_topic(friend_uuid)
-            payload = %{
-              from: %{uuid: friend, user_uuid: friend_uuid}, 
-              to: %{uuid: to, user_uuid: to_uuid}}
+            topic = user_topic(friend)
+            payload = %{from: friend, to: to}
             broadcast(topic, "friend_removed", payload)
 
             :ok
@@ -82,12 +72,8 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
     |> case  do
       false -> :ok
       true ->
-        %{user_uuid: friend_uuid} = Accounts.friend_by_uuid(friend)
-        %{user_uuid: from_uuid} = Accounts.friend_by_uuid(from)
-        topic = user_topic(friend_uuid)
-        payload = %{
-          to: %{uuid: friend, user_uuid: friend_uuid}, 
-          from: %{uuid: from, user_uuid: from_uuid}}
+        topic = user_topic(friend)
+        payload = %{to: friend, from: from}
         broadcast(topic, "friend_request_received", payload)
 
         :ok
@@ -101,12 +87,8 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
     |> case  do
       false -> :ok
       true ->
-        %{user_uuid: friend_uuid} = Accounts.friend_by_uuid(friend)
-        %{user_uuid: to_uuid} = Accounts.friend_by_uuid(to)
-        topic = user_topic(friend_uuid)
-        payload = %{
-          from: %{uuid: friend, user_uuid: friend_uuid}, 
-          to: %{uuid: to, user_uuid: to_uuid}}
+        topic = user_topic(friend)
+        payload = %{from: friend, to: to}
         broadcast(topic, "friend_request_rejected", payload)
 
         :ok
@@ -120,12 +102,8 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
     |> case  do
       false -> :ok
       true ->
-        %{user_uuid: friend_uuid} = Accounts.friend_by_uuid(friend)
-        %{user_uuid: from_uuid} = Accounts.friend_by_uuid(from)
-        topic = user_topic(friend_uuid)
-        payload = %{
-          to: %{uuid: friend, user_uuid: friend_uuid}, 
-          from: %{uuid: from, user_uuid: from_uuid}}
+        topic = user_topic(friend)
+        payload = %{to: friend, from: from}
         broadcast(topic, "friend_request_cancelled", payload)
 
         :ok
