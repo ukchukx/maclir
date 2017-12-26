@@ -5,7 +5,7 @@ config :maclir, env: :prod
 config :maclir, MacLirWeb.Endpoint,
   load_from_system_env: false,
   http: [port: System.get_env("MACLIR_PORT"), compress: true],
-  url: [host: "localhost", port: System.get_env("MACLIR_PORT")],
+  url: [host: "maclir.com.ng", port: 80],
   server: true,
   check_origin: true,
   root: ".",
