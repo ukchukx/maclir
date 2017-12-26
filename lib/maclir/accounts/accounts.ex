@@ -213,6 +213,7 @@ defmodule MacLir.Accounts do
   def user_friends(user_uuid) do
     user_uuid
     |> friend_by_uuid
+    |> Map.get(:friends)
     |> Enum.map(&friend_by_uuid/1)
   end
 
