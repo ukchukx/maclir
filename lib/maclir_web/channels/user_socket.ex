@@ -11,8 +11,7 @@ defmodule MacLirWeb.UserSocket do
   channel "user_presence:*", MacLirWeb.UserChannel
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket,
-    check_origin: false
+  transport :websocket, Phoenix.Transports.WebSocket
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can

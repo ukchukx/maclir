@@ -5,9 +5,9 @@ config :maclir, env: :prod
 config :maclir, MacLirWeb.Endpoint,
   load_from_system_env: false,
   http: [port: System.get_env("MACLIR_PORT"), compress: true],
-  url: [host: "maclir.com.ng", port: 80],
+  url: [host: "https://maclir.com.ng", port: 80],
   server: true,
-  check_origin: true,
+  check_origin: ["httos://maclir.com.ng"],
   root: ".",
   cache_static_manifest: "priv/static/cache_manifest.json",
   version: Application.spec(:maclir, :vsn)
