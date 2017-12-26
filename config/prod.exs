@@ -7,6 +7,7 @@ config :maclir, MacLirWeb.Endpoint,
   http: [port: System.get_env("MACLIR_PORT"), compress: true],
   url: [host: "localhost", port: System.get_env("MACLIR_PORT")],
   server: true,
+  check_origin: true,
   root: ".",
   cache_static_manifest: "priv/static/cache_manifest.json",
   version: Application.spec(:maclir, :vsn)
