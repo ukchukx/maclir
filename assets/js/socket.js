@@ -22,7 +22,12 @@ class SocketHandler {
 
 		this.socket = new Socket("/socket", {
 			params: {token: window.userToken},
-		  logger: (kind, msg, data) => console.log(`${kind} >> ${msg}`, data)
+		  logger: (kind, msg, data) => {
+		  	if (window.debug) {
+		  		console.log('kind and msg', kind, msg);
+		  		console.log('data', data);
+		  	}
+		  }
 		});
 
 		this.socket.connect();
@@ -111,40 +116,40 @@ class SocketHandler {
 	handlePresenceDiff(diff) {
 	  this.presences = Presence.syncDiff(this.presences, diff);
 	  this.renderPresences();
-	};
+	}
 
 	handlePresenceState(state) {
 	  this.presences = Presence.syncState(this.presences, state);
 	  this.renderPresences();
-	};
+	}
 
 	handlePresenceUpdate(update) {
 		this.presences = Object.assign(this.presences, update);
 	  this.renderPresences();
-	};
+	}
 
 	handleLocationUpdate({ id, latitude, longitude, username }) {
 		this.mapHandler.setLocationFor({ id, latitude, longitude, username });
-	};
+	}
 
 	handleFriendAdded(payload) {
-		console.log(payload);
+		
 	}
 
 	handleFriendRemoved(payload) {
-		console.log(payload);
+		
 	}
 
 	handleFriendRequestReceived(payload) {
-		console.log(payload);
+		
 	}
 
 	handleFriendRequestRejected(payload) {
-		console.log(payload);
+		
 	}
 
 	handleFriendRequestCancelled(payload) {
-		console.log(payload);
+		
 	}
 }
 

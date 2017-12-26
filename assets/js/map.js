@@ -25,6 +25,7 @@ class MapHandler {
     },(err) => {
       console.error('position', err);
       toastr.error('Unable to get location. App will not function properly');
+      this.registerLocationWatcher();
       return false;
     })
     .then((hasCoords) => {
@@ -49,13 +50,18 @@ class MapHandler {
 
         const marker = this.addMarker({ coords: mapCenter, label: this.userName });
         this.markers = [{ [this.userId]: { marker, label: this.userName } }];
+        if (window.debug) console.log('setup marker', this.markers);
         this.socketHandler.pushLocationChange(this.userId, mapCenter);
-        // Register a watcher for user location changes
-        this.watchID = navigator.geolocation.watchPosition(this.updateUserLocation.bind(this));
+        this.registerLocationWatcher();
       }
     });
 
 
+  }
+
+  registerLocationWatcher() {
+    // Register a watcher for user location changes
+    this.watchID = navigator.geolocation.watchPosition(this.updateUserLocation.bind(this));
   }
 
   addMarker({ coords, label }) {
@@ -67,11 +73,13 @@ class MapHandler {
   setLocationFor({ id, latitude, longitude, username }) {
     if (!this.markers[id]) {
       this.markers[id] = this.addMarker({ label: username, coords: [latitude, longitude] });
+      if (window.debug) console.log('setLocationFor', this.markers);
       return;
     }
 
     this.markers[id].marker = this.markers[id].marker.setLatLng([latitude, longitude]);
     if (id === this.userId) this.map.flyTo([latitude, longitude]);
+    if (window.debug) console.log('setLocationFor', this.markers);
   }
 
   updateUserLocation({ coords }) {

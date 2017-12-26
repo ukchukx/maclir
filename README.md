@@ -10,5 +10,3 @@ Set the following environment variables:
 To build: `./build.sh`
 To run: `./deploy.sh`
 
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.

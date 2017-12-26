@@ -13,6 +13,8 @@ defmodule MacLirWeb.LayoutView do
       %{username: username} -> username
     end
   end
+
+  def debug?, do: true
   
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
 

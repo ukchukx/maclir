@@ -35,6 +35,7 @@
       window.userUUID = "<%= assigns[:socket_uuid] %>";
       window.userName = "<%= username(@conn) %>";
       window.userToken = "<%= assigns[:socket_token] %>";
+      window.debug = <%= debug?() %>;
     </script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
