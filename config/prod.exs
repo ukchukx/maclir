@@ -7,7 +7,7 @@ config :maclir, MacLirWeb.Endpoint,
   http: [port: System.get_env("MACLIR_PORT"), compress: true],
   url: [host: "https://maclir.com.ng", port: 80],
   server: true,
-  check_origin: ["httos://maclir.com.ng"],
+  check_origin: ["https://maclir.com.ng"],
   root: ".",
   cache_static_manifest: "priv/static/cache_manifest.json",
   version: Application.spec(:maclir, :vsn)
@@ -36,7 +36,7 @@ config :logger, :info,
   path: "logs/info.log",
   format: "[$date] [$time] [$level] $metadata $levelpad$message\n",
   metadata: [:date, :application, :module, :function, :line],
-  level: :warn
+  level: :info
 
 
 config :maclir, MacLirWeb.Endpoint,
