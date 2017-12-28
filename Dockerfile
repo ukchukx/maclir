@@ -92,7 +92,7 @@ ENV TZ Africa/Lagos
 
 RUN mkdir -p /app/logs
 WORKDIR /app
-COPY ./_build/prod/rel/maclir/releases/1.0.0/maclir.tar.gz /app/maclir.tar.gz
+COPY ./_build/prod/rel/maclir/releases/1.1.0/maclir.tar.gz /app/maclir.tar.gz
 RUN tar -zxvf maclir.tar.gz
 
 
