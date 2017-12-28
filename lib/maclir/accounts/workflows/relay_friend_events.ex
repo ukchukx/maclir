@@ -13,6 +13,8 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
 
   alias __MODULE__.Cache
 
+  import MacLir.Support.Time, only: [recent?: 1, naive_to_datetime: 1]
+
   def init do
     Cache.start_link()
     :ok
@@ -118,23 +120,6 @@ defmodule MacLir.Accounts.Workflows.RelayFriendEvents do
       false -> :ok
       true -> Endpoint.broadcast!(topic, msg, payload)
     end
-  end
-
-  defp recent?(date_time) do
-    # Check if date_time occurred in the last 30 seconds
-    # Since event handlers are called on aggregate hydration (at startup),
-    # we don't want to keep broadcasting past events
-    DateTime.utc_now
-    |> DateTime.diff(date_time)
-    |> Kernel.<(30)
-  end
-
-  defp naive_to_datetime(naive_datetime) do
-    naive_datetime
-    |> NaiveDateTime.to_iso8601
-    |> (&<>/2).("+00:00")
-    |> DateTime.from_iso8601 # {:ok, date_time, 0}
-    |> elem(1)
   end
 
   defp user_topic(uuid), do: "user:#{uuid}"

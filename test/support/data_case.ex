@@ -11,6 +11,8 @@ defmodule MacLir.DataCase do
       import MacLir.Factory
       import MacLir.Fixture
       import MacLir.DataCase
+      import MacLir.Helpers.Wait
+      import MacLir.Helpers.ProcessHelper
     end
   end
 

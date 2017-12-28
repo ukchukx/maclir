@@ -3,17 +3,25 @@ defmodule MacLir.Accounts.FriendTest do
 
   import Commanded.Assertions.EventAssertions
 
+  alias Commanded.Aggregates.{Aggregate,ExecutionContext}
   alias MacLir.Accounts
+  alias MacLir.Accounts.Aggregates.Friend, as: FriendAggregate
   alias MacLir.Accounts.Projections.{Friend,User}
+  alias MacLir.Accounts.Commands.{CreateFriend}
   alias MacLir.Accounts.Events.{FriendCreated,FriendUpdated}
+
+  alias MacLir.Helpers.ProcessHelper
+
 
   describe "a friend" do
     @tag :unit
     test "should be created when a user is registered" do
+      IO.inspect DateTime.utc_now
       assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
+      IO.inspect DateTime.utc_now
 
       assert_receive_event FriendCreated, fn event ->
-        refute event.friend_uuid == ""
+        assert event.friend_uuid == user.uuid
         assert event.user_uuid == user.uuid
         assert event.username == user.username
       end
@@ -29,6 +37,25 @@ defmodule MacLir.Accounts.FriendTest do
         assert event.friend_uuid == friend_uuid
         assert event.username == user.username
       end
+    end
+
+    @tag :unit
+    test "should emit only 1 FriendCreated event" do
+      uuid = UUID.uuid4()
+
+      {:ok, ^uuid} = Commanded.Aggregates.Supervisor.open_aggregate(FriendAggregate, uuid)
+      command = %CreateFriend{user_uuid: uuid, friend_uuid: uuid, username: "testuser"}
+      context = %ExecutionContext{command: command, handler: FriendAggregate, function: :execute}
+      
+      {:ok, 1, events} = Aggregate.execute(FriendAggregate, uuid, context)
+      assert events == [%FriendCreated{friend_uuid: uuid, user_uuid: uuid, username: "testuser"}]
+      
+      ProcessHelper.shutdown_aggregate(FriendAggregate, uuid)
+      # reload aggregate to fetch persisted events from event store and rebuild state by applying saved events
+      {:ok, ^uuid} = Commanded.Aggregates.Supervisor.open_aggregate(FriendAggregate, uuid)
+      
+      assert Aggregate.aggregate_version(FriendAggregate, uuid) == 1
+      assert Aggregate.aggregate_state(FriendAggregate, uuid) == %FriendAggregate{uuid: uuid, user_uuid: uuid, username: "testuser"}
     end
 
     @tag :unit
