@@ -204,6 +204,7 @@ defmodule MacLir.Accounts do
   def user_received_requests(user_uuid) do
     user_uuid
     |> friend_by_uuid
+    |> Map.get(:received_requests)
     |> Enum.map(&friend_by_uuid/1)
   end
 
