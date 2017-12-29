@@ -89,7 +89,11 @@ class MapHandler {
       return;
     }
 
-    this.markers[id].marker = this.markers[id].marker.setLatLng([latitude, longitude]);
+    this.markers[id].marker = this.markers[id].marker
+      .setLatLng([latitude, longitude])
+      .setPopupContent(username);
+    this.markers[id].label = username;
+    
     if (id === this.userId) this.map.flyTo([latitude, longitude]);
     if (window.debug) console.log('setLocationFor', this.markers);
   }
