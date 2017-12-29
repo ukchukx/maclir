@@ -7,13 +7,24 @@ defmodule MacLir.Accounts.Workflows.UpdateFriendFromUser do
   alias MacLir.Accounts.Commands.UpdateFriend
   alias MacLir.Router
 
-  def handle(%UsernameChanged{user_uuid: uuid, username: username}, %{causation_id: cause, correlation_id: corr}) do
-    command = UpdateFriend.new(friend_uuid: uuid, username: username)
-    with :ok <- Router.dispatch(command, causation_id: cause, correlation_id: corr, consistency: :strong) do
-      :ok
-    else
-      reply -> reply
-    end
+  import MacLir.Support.Time, only: [recent?: 1, naive_to_datetime: 1]
+
+  def handle(%UsernameChanged{user_uuid: uuid, username: username}, 
+    %{causation_id: ca, correlation_id: co, created_at: created_at}) do
+    created_at
+    |> naive_to_datetime
+    |> recent?
+    |> case do
+      false -> :ok
+      true ->
+        command = UpdateFriend.new(friend_uuid: uuid, username: username)
+        with :ok <- Router.dispatch(command, causation_id: ca, correlation_id: co, consistency: :strong) do
+          :ok
+        else
+          reply -> reply
+        end
+    end 
+
   end
 end
 
