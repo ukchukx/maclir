@@ -48,7 +48,7 @@ config :eventstore, EventStore.Storage,
   serializer: Commanded.Serialization.JsonSerializer,
   username: System.get_env("POSTGRES_USER"),
   password: System.get_env("POSTGRES_PASS"),
-  database: "maclir_eventstore_prod",
+  database: "maclir_eventstore",
   hostname: "localhost",
   pool_size: 10
 
@@ -57,6 +57,6 @@ config :maclir, MacLir.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: System.get_env("POSTGRES_USER"),
   password: System.get_env("POSTGRES_PASS"),
-  database: "maclir_readstore_prod",
+  database: "maclir_readstore",
   hostname: "localhost",
   pool_size: 15
