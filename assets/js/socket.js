@@ -42,6 +42,8 @@ class SocketHandler {
 			    this.handlePresenceState(payload);
 			  } else if (event == "presence_update") {
 			    this.handlePresenceUpdate(payload);
+			  } else if (event == "location_update") {
+			    this.handleLocationUpdate(payload);
 			  } else if (event == "friend_added") {
 			    this.handleFriendAdded(payload);
 			  }	else if (event == "friend_removed") {
@@ -79,7 +81,7 @@ class SocketHandler {
 	}
 
 	pushLocationChange({ id, latitude, longitude, username }) {
-		this.channel.push("location:update", { id, latitude, longitude, username });
+		if (latitude && longitude) this.channel.push("location:update", { id, latitude, longitude, username });
 	}
 
 	updatePresence() {
@@ -129,7 +131,7 @@ class SocketHandler {
 	}
 
 	handleLocationUpdate({ id, latitude, longitude, username }) {
-		this.mapHandler.setLocationFor({ id, latitude, longitude, username });
+		if (latitude && longitude) this.mapHandler.setLocationFor({ id, latitude, longitude, username });
 	}
 
 	handleFriendAdded(payload) {

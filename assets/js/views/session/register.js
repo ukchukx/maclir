@@ -24,7 +24,7 @@ export default class View extends MainView {
     e.preventDefault();
     e.stopPropagation();
 
-    if (this.latInput.value && this.longInput.value && this.validatePhone()) { // TODO: Check if they are actually coordinates
+    if (!!this.latInput.value && !!this.longInput.value && this.validatePhone()) { // TODO: Check if they are actually coordinates
       e.returnValue = true;
       return true;
     }
@@ -41,6 +41,7 @@ export default class View extends MainView {
   }
 
   setCoords() {
+    console.log('setting coords...');
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.latInput.value = position.coords.latitude;
@@ -49,6 +50,7 @@ export default class View extends MainView {
       (err) => {
         toastr.error('This app cannot function without location access.');
         document.getElementById('register-button').disabled = true;
+        setTimeout(this.setTimeout.bind(this), 5000);
       }, 
       { enableHighAccuracy: true }
     );

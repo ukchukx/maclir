@@ -9,15 +9,19 @@ class MapHandler {
   	this.setupMap();
   }
 
-  setupMap() {
-  	if (!document.querySelector('#map')) return;
-    new Promise((resolve, reject) => {
+  fetchLocation() {
+    return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         position => resolve(position), 
         err => reject(err), 
         { enableHighAccuracy: true }
       );      
     })
+  }
+
+  setupMap() {
+  	if (!document.querySelector('#map')) return;
+    this.fetchLocation()
     .then((pos) => {
       console.log('position', pos);
       this.coords = [pos.coords.latitude, pos.coords.longitude];
@@ -25,7 +29,7 @@ class MapHandler {
     },(err) => {
       console.error('position', err);
       toastr.error('Unable to get location. App will not function properly');
-      this.registerLocationWatcher();
+      this.watchLocation();
       return false;
     })
     .then((hasCoords) => {
@@ -49,30 +53,38 @@ class MapHandler {
     		}).addTo(this.map);
 
         const marker = this.addMarker({ coords: mapCenter, label: this.userName });
-        this.markers = [{ [this.userId]: { marker, label: this.userName } }];
+        this.markers = { [this.userId]: { marker, label: this.userName } };
         if (window.debug) console.log('setup marker', this.markers);
         this.socketHandler.pushLocationChange(this.userId, mapCenter);
-        this.registerLocationWatcher();
+        this.watchLocation();
       }
     });
 
 
   }
 
-  registerLocationWatcher() {
-    // Register a watcher for user location changes
-    this.watchID = navigator.geolocation.watchPosition(this.updateUserLocation.bind(this));
+  watchLocation() {
+    setTimeout(() => {
+      this.fetchLocation()
+      .then((pos) => {
+        console.log('position update', pos);
+        this.updateUserLocation(pos);
+        this.watchLocation();
+      })
+    }, 30000);
   }
 
   addMarker({ coords, label }) {
     return L.marker(coords, { title: label })
-      .addTo(this.map)
-      .bindPopup(label);
+      .bindPopup(label)
+      .addTo(this.map);
   }
 
   setLocationFor({ id, latitude, longitude, username }) {
+    if (!latitude || !longitude) return;
+
     if (!this.markers[id]) {
-      this.markers[id] = this.addMarker({ label: username, coords: [latitude, longitude] });
+      this.markers[id] = { marker: this.addMarker({ label: username, coords: [latitude, longitude] }), label: username };
       if (window.debug) console.log('setLocationFor', this.markers);
       return;
     }
