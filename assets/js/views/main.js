@@ -6,7 +6,6 @@ export default class MainView {
     this.userId = window.userUUID;
 
     this.showFlash();
-    this.bootDropdown();
     
     this.socketHandler = new SockerHandler();
     this.mapHandler = new MapHandler(this.socketHandler);
@@ -25,13 +24,6 @@ export default class MainView {
     this.deleteForms
       .map(form => this.removeEventListener('submit', this.handleSubmit.bind(this), false));
     console.log('MainView unmounted');
-  }
-
-  bootDropdown() {
-  	// The first click on a dropdown does nothing, so 
-  	// let's get the first click out of the way
-  	const el = document.querySelector('.navbar .nav-item.dropdown > a')
-    if (el) el.click();
   }
 
   handleSubmit(e) {
