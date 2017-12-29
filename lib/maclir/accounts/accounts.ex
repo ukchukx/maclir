@@ -193,8 +193,12 @@ defmodule MacLir.Accounts do
   def user_sent_requests(user_uuid) do
     user_uuid
     |> friend_by_uuid
+    |> case do
+      nil -> %{}
+      friend -> friend
+    end
     |> load_sent_requests
-    |> Map.get(:sent_requests)
+    |> Map.get(:sent_requests, [])
     |> Enum.map(&friend_by_uuid/1)
   end
 
@@ -204,7 +208,11 @@ defmodule MacLir.Accounts do
   def user_received_requests(user_uuid) do
     user_uuid
     |> friend_by_uuid
-    |> Map.get(:received_requests)
+    |> case do
+      nil -> %{}
+      friend -> friend
+    end
+    |> Map.get(:received_requests, [])
     |> Enum.map(&friend_by_uuid/1)
   end
 
@@ -214,7 +222,11 @@ defmodule MacLir.Accounts do
   def user_friends(user_uuid) do
     user_uuid
     |> friend_by_uuid
-    |> Map.get(:friends)
+    |> case do
+      nil -> %{}
+      friend -> friend
+    end
+    |> Map.get(:friends, [])
     |> Enum.map(&friend_by_uuid/1)
   end
 
