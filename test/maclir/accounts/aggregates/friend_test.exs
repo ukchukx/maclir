@@ -16,9 +16,7 @@ defmodule MacLir.Accounts.FriendTest do
   describe "a friend" do
     @tag :unit
     test "should be created when a user is registered" do
-      IO.inspect DateTime.utc_now
       assert {:ok, %User{} = user} = Accounts.register_user(build(:user))
-      IO.inspect DateTime.utc_now
 
       assert_receive_event FriendCreated, fn event ->
         assert event.friend_uuid == user.uuid

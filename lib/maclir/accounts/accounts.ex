@@ -68,13 +68,15 @@ defmodule MacLir.Accounts do
   @doc """
   Create a friend.
   """
-  def create_friend(%{user_uuid: uuid} = attrs) do
+  def create_friend(%{user_uuid: uuid} = attrs, opts \\ []) do
+    opts = opts ++ [consistency: :strong]
+
     create_friend =
       attrs
       |> CreateFriend.new
       |> CreateFriend.assign_uuid(uuid)
 
-    with :ok <- Router.dispatch(create_friend, consistency: :strong) do
+    with :ok <- Router.dispatch(create_friend, opts) do
       get(Friend, uuid)
     else
       reply -> reply

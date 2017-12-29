@@ -18,7 +18,9 @@ defmodule MacLir.Accounts.Workflows.UpdateFriendFromUser do
       false -> :ok
       true ->
         command = UpdateFriend.new(friend_uuid: uuid, username: username)
-        with :ok <- Router.dispatch(command, causation_id: ca, correlation_id: co, consistency: :strong) do
+        opts = [causation_id: ca, correlation_id: co, consistency: :strong]
+        
+        with :ok <- Router.dispatch(command, opts) do
           :ok
         else
           reply -> reply
