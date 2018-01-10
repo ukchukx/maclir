@@ -36,8 +36,8 @@ defmodule MacLir.Accounts.Commands.RegisterUser do
     by: &UniquePhone.validate/2
 
   validates :hashed_password, presence: [message: "can't be empty"], string: true
-  validates :latitude, presence: [message: "can't be empty"], latitude: true
-  validates :longitude, presence: [message: "can't be empty"], longitude: true
+  validates :latitude, latitude: [allow_nil: true]
+  validates :longitude, longitude: [allow_nil: true]
   validates :role, presence: [message: "can't be empty"], role: true
 
   @doc """

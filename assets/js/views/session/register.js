@@ -3,6 +3,7 @@ import MainView from '../main';
 export default class View extends MainView {
   mount() {
     super.mount();
+    this.locationErrMsg = 'This app will not work without location access.';
 
     this.form = document.getElementById('register-form');
     this.phoneInput = document.getElementById('phone');
@@ -24,13 +25,13 @@ export default class View extends MainView {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!!this.latInput.value && !!this.longInput.value && this.validatePhone()) { // TODO: Check if they are actually coordinates
+    if (this.validatePhone()) {
       e.returnValue = true;
       return true;
     }
 
     if (!this.validatePhone()) toastr.error('Phone number not valid.');
-    if (!this.latInput.value) toastr.error('App will not work without location');
+    if (!this.latInput.value) toastr.error(this.locationErrMsg);
 
     e.returnValue = false;
     return true;
@@ -48,8 +49,7 @@ export default class View extends MainView {
         this.longInput.value = position.coords.longitude;
       }, 
       (err) => {
-        toastr.error('This app cannot function without location access.');
-        document.getElementById('register-button').disabled = true;
+        toastr.error(this.locationErrMsg);
         setTimeout(this.setTimeout.bind(this), 5000);
       }, 
       { enableHighAccuracy: true }
